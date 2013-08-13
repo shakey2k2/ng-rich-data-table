@@ -2,11 +2,16 @@
 <html lang="en" ng-app="myApp">
 <head>
   <meta charset="utf-8">
-  <title>My AngularJS App</title>
+  <title>Rich Data Table</title>
   <link rel="stylesheet" href="css/app.css"/>
 </head>
 <body>
 
+  <ul class="menu">
+    <li><a href="#/view1">other view1</a></li>
+    <li><a href="#/view2">other view2</a></li>
+  </ul>
+  <div ng-view></div>
   <rdt-table />
 
   <!-- In production use:
