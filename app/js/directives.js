@@ -4,9 +4,16 @@
 
 
 angular.module('rdt.directives', [])
-    .directive('rdtTable', [ function() {
+    .directive('rdtTable', [ 'Items', function(Items) {
         return {
         	restrict:'E',
+            scope: { },
+            controller: function($scope) {
+                $scope.items = Items.query();
+                $scope.getValue = function( data, columnDef ) {
+                    return data[columnDef.key];
+                };
+            },
         	templateUrl:'templates/mainTable.html',
         	replace: true
         };
@@ -31,20 +38,4 @@ angular.module('rdt.directives', [])
         	templateUrl:'templates/rdtFooter.html',
         	replace: false
         };
-    }])
-    // workaround for AngularJS bug: https://github.com/angular/angular.js/issues/1459
-	.directive("wsReplaceTag", function() {
-	  return function(scope, element, attrs) {
-	      var newTag = attrs.wsReplaceTag;
-	      var nodeAttributes = {};
-
-	      $.each(element[0].attributes, function(idx, attr) {
-	          nodeAttributes[attr.nodeName] = attr.nodeValue;
-	      });
-
-	      element.replaceWith(function () {
-	          return $("<" + newTag + "/>", nodeAttributes).append(element.contents());
-	      });
-	  };
-	});
-    
+    }]);
