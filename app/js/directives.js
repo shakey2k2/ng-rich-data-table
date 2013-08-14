@@ -6,7 +6,7 @@
 angular.module('rdt.directives', [])
     .directive('rdtTable', [ 'Items', function(Items) {
         return {
-        	restrict:'E',
+        	restrict:'A',
             scope: { },
             controller: function($scope) {
                 $scope.items = Items.query();
@@ -15,7 +15,7 @@ angular.module('rdt.directives', [])
                 };
             },
         	templateUrl:'templates/mainTable.html',
-        	replace: true
+        	replace: false
         };
     }])
     .directive('rdtHeader', [ function() {
