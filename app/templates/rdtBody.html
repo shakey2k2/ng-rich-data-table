@@ -1,3 +1,3 @@
-<tr ng-repeat="row in items.data">
+<tr ng-repeat="row in items.data | orderBy: getColumnOrder() ">
     <td ng-repeat="column in items.columns">{{ getValue(row, column) }}</td>
 </tr>
