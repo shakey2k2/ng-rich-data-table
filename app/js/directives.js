@@ -4,12 +4,13 @@
 
 
 angular.module('rdt.directives', [])
-    .directive('rdtTable', [ 'Items', function(Items) {
+    .directive('rdtTable', [ function($scope) {
         return {
         	restrict:'A',
-            scope: { },
+            scope: {
+                settings: "="
+            },
             controller: function($scope) {
-                $scope.items = Items.query();
                 $scope.currentOrderByColumn = 0;
                 $scope.getValue = function( data, columnDef ) {
                     return data[columnDef.key];
@@ -19,7 +20,7 @@ angular.module('rdt.directives', [])
                     
                 };
                 $scope.getColumnOrder = function(){
-                    return $scope.items.columns[$scope.currentOrderByColumn].key;
+                    return $scope.settings.columns[$scope.currentOrderByColumn].key;
                 };
                 $scope.isActive = function ($index) {
                     if($index === $scope.currentOrderByColumn) {

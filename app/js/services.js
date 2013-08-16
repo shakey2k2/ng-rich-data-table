@@ -8,13 +8,6 @@
 angular.module('myApp.services', [])
  	.factory('Items', function () {
       var items = {};
-      /*
-      items.query = function () {
-      	$http.get('test-data/table.json').success(function(response) {
-        	return response.data;
-    	})
-      };
-      */
       items.query = function () {
         // data from server here
         return  {

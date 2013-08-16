@@ -3,71 +3,64 @@
 /* jasmine specs for directives go here */
 
 describe('directives', function() {
-  beforeEach(module('rdt.directives'));
-  beforeEach(module('myApp.services'));
+    var $scope;
 
-  beforeEach(inject(function ($compile, $rootScope, $templateCache) {
-    describe('rdtTable directive', function() {
-      var compile,
-      scope,
-      rdtTable;
-     
-      /* IF $httpBackend REMOVED i get this ERROR 
-      Chrome 28.0.1500 (Windows 7) rdtTable directive encountered a declaration exception FAILED
-              Error: Unexpected request: GET templates/mainTable.html
-              No more request expected*/
-     /* var $httpBackend;
-      beforeEach(inject(function($injector) {
-        $httpBackend = $injector.get('$httpBackend');
-        $httpBackend.whenGET('templates/mainTable.html').passThrough();
-      })); 
-      */
-      // also tried : http://stackoverflow.com/questions/15214760/unit-testing-angularjs-directive-with-templateurl?rq=1
-      // but returns ERROR TypeError: Cannot set property 'typeName' of undefined
-      $templateCache.put('templates/mainTable.html', '<thead rdt-header></thead> <tfoot rdt-footer></tfoot><tbody rdt-body></tbody>');
+    beforeEach(module('rdt.directives'));
+    beforeEach(module('templates/mainTable.html'));
+    beforeEach(module('templates/header.html'));
+    beforeEach(module('templates/rdtBody.html'));
+    beforeEach(module('templates/rdtFooter.html'));
 
-      compile = $compile;
-      scope = $rootScope;
-      rdtTable = angular.element($templateCache.get('templates/mainTable.html'));
-      compile(rdtTable)(scope);
-      scope.$digest();
+    describe('rdt-table', function() {
+        describe('make sure the table got rendered', function() {
+            var sampleData = {
+                data : [
+                    {name: "Moroni",  age: 50},
+                    {name: "Tiancum", age: 43},
+                    {name: "Jacob",   age: 27},
+                    {name: "Nephi",   age: 29},
+                    {name: "Enos",    age: 34}
+                ],
+                columns : [
+                    { key: 'name', label: 'Name' },
+                    { key: 'age',  label: 'Age'  }
+                ]
+            };
 
-      it('should check if td elements in main table are created', function(){
-        
-        var tds = rdtTable.find('td');
-        console.log('tds are:'+ tds.lenght);
-        expect(tds.lenght).toBeGreaterThan(0);
-      });
-    }); 
+            describe('test that the header is rendered correctly', function() {
+                var rdtTable;
 
-    describe('rdtHeader directive', function() {
-      it('should check if rdt-header th elements are created', function(){
-        inject(function($compile, $rootScope) {
-          var element = $compile('<thead rdt-header></thead>')($rootScope);
+                beforeEach(inject(function($rootScope, $compile) {
+                    // Setup scope with data
+                    $rootScope.settings = sampleData;
 
-          console.log(JSON.stringify(element));
-          var ths = element.find('th');
-          console.log('ths are:'+ ths.lenght);
-          expect(element.lenght).toBeGreaterThan(0);
-        }); 
-      });
+                    // Create the actual table element and compile it
+                    rdtTable = angular.element( '<table rdt-table settings="settings" cellpadding="0" cellspacing="0" border="1"></table>' );
+                    $compile(rdtTable)($rootScope);
+
+                    // Render it
+                    $rootScope.$digest();
+                }));
+
+                it('should have the correct number of columns in the header', function() {
+                    // Test number of column headers
+                    var theadCols = rdtTable.find('thead tr th');
+                    //console.log('theadCols is:'+ theadCols.length);
+                    expect(theadCols.length).toBe(2);
+                });
+
+                it('should be in the correct order', function() {
+                    var theadCols = rdtTable.find('thead tr th' );
+
+                    // TODO: Find a better solution for this then having to
+                    // put this inside of a jQuery object. There has to be an
+                    // angular way to do this
+                    expect($(theadCols[0]).html()).toBe('Name');
+                    expect($(theadCols[1]).html()).toBe('Age');
+                })
+            });
+        });
     });
-
-  }));
-
-
-
-  describe('app-version', function() {
-    it('should print current version', function() {
-      module(function($provide) {
-        $provide.factory('Items', 'TEST_VER');
-      });
-      inject(function($compile, $rootScope) {
-        var element = $compile('<span app-version></span>')($rootScope);
-        expect(element.text()).toEqual('TEST_VER');
-      });
-    });
-  });
-
 
 });
+
