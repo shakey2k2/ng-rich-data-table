@@ -49,15 +49,79 @@ describe('directives', function() {
                     expect(theadCols.length).toBe(2);
                 });
 
-                it('should be in the correct order', function() {
+                it('header titles should be in the correct order', function() {
                     var theadCols = rdtTable.find('thead tr th' );
 
                     // TODO: Find a better solution for this then having to
                     // put this inside of a jQuery object. There has to be an
                     // angular way to do this
-                    expect($(theadCols[0]).html()).toBe('Name');
-                    expect($(theadCols[1]).html()).toBe('Age');
+                    // -> like using angular.element or you mean something else?
+                    expect(angular.element(theadCols[0]).html()).toBe('Name');
+                    expect(angular.element(theadCols[1]).html()).toBe('Age');
                 })
+
+                it('should render all the rows in main table body according to data', function() {
+                    var tRows = rdtTable.find('tbody tr' );
+                    // total rows should be sampleData.data + header + footer
+                    expect(tRows.length).toBe(sampleData.data.length);
+                })
+
+                it('should render the corresponding content in each column of main table body', function() {
+                    var tBodyRows = rdtTable.find('tbody tr' ),
+                    tBodyTd1, tBodyTd2,
+                    firstColumnArray = [],
+                    secondColumnArray = [];
+                    // create array for testing with the columns in sample data
+                    for (var i = 0; i <= sampleData.data.length - 1; i++) {
+                        firstColumnArray.push(sampleData.data[i].name);
+                        secondColumnArray.push(sampleData.data[i].age);
+                    };
+                    // test if the array contains the corresponding td column data
+                    for (var i = 0; i <= tBodyRows.length - 1; i++) {
+                        tBodyTd1 = angular.element(tBodyRows[i]).find('td')[0];
+                        tBodyTd2 = angular.element(tBodyRows[i]).find('td')[1];
+                        expect(firstColumnArray).toContain( angular.element(tBodyTd1).html() );
+                        expect(secondColumnArray).toContain( parseInt( angular.element(tBodyTd2).html()) );
+                    };
+
+                })
+
+                it('should order the rows by age after clicking', function() {
+                    var theadCols = rdtTable.find('thead tr th' );
+
+                    // click second column to order by age
+                    angular.element(theadCols[1]).click();
+
+                    // lowest age should be in the first row
+                    var tBodyRows = rdtTable.find('tbody tr' );
+                    var ageFirstRow = angular.element(tBodyRows[0]).find('td')[1];
+                    var ageLastRow = angular.element(tBodyRows[4]).find('td')[1];
+
+                    // test first and last rows after clicking
+                    expect( parseInt(angular.element(ageFirstRow).html()) ).toBe(27);
+                    expect( parseInt(angular.element(ageLastRow).html()) ).toBe(50);
+                    //console.log('full table after click: ' + angular.element(rdtTable).html());
+
+                })
+
+                it('should order the rows by name after clicking', function() {
+                    var theadCols = rdtTable.find('thead tr th' );
+
+                    // click first column to order by name
+                    angular.element(theadCols[0]).click();
+                                       
+                    var tBodyRows = rdtTable.find('tbody tr' );
+
+                    // names should be ordered alphabetically
+                    var nameFirstRow = angular.element(tBodyRows[0]).find('td')[0];
+                    var nameLastRow = angular.element(tBodyRows[4]).find('td')[0];
+
+                    // test first and last rows after clicking
+                    expect( angular.element(nameFirstRow).html() ).toBe('Enos');
+                    expect( angular.element(nameLastRow).html() ).toBe('Tiancum');
+
+                })
+
             });
         });
     });
