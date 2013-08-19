@@ -132,6 +132,19 @@ describe('directives', function() {
                         expect( angular.element(nameLastRow).html() ).toBe('Tiancum');
 
                     })
+
+                    it('should hide the name column after clicking the hide name button', function() {
+                        
+                        var tableButtons = rdtTable.find('button');
+                        console.log('table buttons: ' + angular.element(tableButtons[0]).html() );
+                        angular.element(tableButtons[0]).click();
+                        var tableCells = rdtTable.find('tbody td');
+
+                        // test if the display attribute of a name cell is 'none'
+                        expect( angular.element(tableCells[4]).css('display') ).toBe('none'); 
+
+                    })
+
                 });
 
                 describe('should render the footer', function() {

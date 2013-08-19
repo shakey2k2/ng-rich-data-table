@@ -11,7 +11,23 @@ angular.module('rdt.directives', [])
                 settings: "="
             },
             controller: function($scope) {
+                /*adding scope.settings to feed the directive*/
+                // $scope.settings = {
+                //     data : [
+                //         {name: "Moroni",  age: 50},
+                //         {name: "Tiancum", age: 43},
+                //         {name: "Jacob",   age: 27},
+                //         {name: "Nephi",   age: 29},
+                //         {name: "Enos",    age: 34}
+                //     ],
+                //     columns : [
+                //         { key: 'name', label: 'Name' },
+                //         { key: 'age',  label: 'Age'  }
+                //     ]
+                // };
+                
                 $scope.currentOrderByColumn = 0;
+                $scope.hiddenColumns = [];
                 $scope.getValue = function( data, columnDef ) {
                     return data[columnDef.key];
                 };
@@ -25,6 +41,23 @@ angular.module('rdt.directives', [])
                 $scope.isActive = function ($index) {
                     if($index === $scope.currentOrderByColumn) {
                         return 'highlight';
+                    }
+                };
+                $scope.hideShowColumn = function(columnIndex) {
+                    var hideArray, tempHidden = 0;
+                    // check if the column is hidden. if it is remove from array of hidden columns, if not hidden add it to the array
+                    tempHidden = $scope.hiddenColumns.indexOf(columnIndex);
+                    if ( tempHidden !== -1 ) {
+                        $scope.hiddenColumns.splice(tempHidden, 1);
+                    }else {
+                        $scope.hiddenColumns.push(columnIndex);
+                    }
+                };
+                $scope.isHidden = function(columnIndex) {
+                    if ( $scope.hiddenColumns.indexOf(columnIndex) !== -1 ) {
+                        return true
+                    }else {
+                        return false;
                     }
                 };
             },

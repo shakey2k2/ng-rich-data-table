@@ -1,3 +1,4 @@
+
 <tr ng-repeat="row in settings.data | orderBy: getColumnOrder() ">
-    <td ng-repeat="column in settings.columns">{{ getValue(row, column) }}</td>
+    <td ng-repeat="column in settings.columns" ng-hide="isHidden($index)">{{ getValue(row, column) }}</td>
 </tr>

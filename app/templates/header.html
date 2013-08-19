@@ -1,3 +1,3 @@
 <tr>
-    <th ng-repeat="column in settings.columns" ng-click="orderByColumn($index)" ng-class="isActive($index)">{{ column.label }}</th>
+    <th ng-repeat="column in settings.columns" ng-click="orderByColumn($index)" ng-hide="isHidden($index)" ng-class="isActive($index)">{{ column.label }}</th>
 </tr>
