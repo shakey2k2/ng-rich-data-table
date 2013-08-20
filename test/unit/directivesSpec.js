@@ -150,7 +150,7 @@ describe('directives', function() {
                 describe('should render the footer', function() {
 
                     it('should render footer rows', function() {
-                        var tFooter = rdtTable.find('tfooter tr');
+                        var tFooter = rdtTable.find('tfoot tr');
                         expect(tFooter.length).toBeGreaterThan(0);
                     })                
                 });
