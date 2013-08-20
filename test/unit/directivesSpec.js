@@ -21,10 +21,12 @@ describe('directives', function() {
                     {name: "Nephi",   age: 29},
                     {name: "Enos",    age: 34}
                 ],
-                columns : [
-                    { key: 'name', label: 'Name' },
-                    { key: 'age',  label: 'Age'  }
-                ]
+                settings: {
+                    columns : [
+                        { key: 'name', label: 'Name' },
+                        { key: 'age',  label: 'Age'  }
+                    ]
+                }
             };
 
             describe('test that the table is rendered correctly', function() {
@@ -32,10 +34,10 @@ describe('directives', function() {
 
                 beforeEach(inject(function($rootScope, $compile) {
                     // Setup scope with data
-                    $rootScope.settings = sampleData;
+                    $rootScope.config = sampleData;
 
                     // Create the actual table element and compile it
-                    rdtTable = angular.element( '<table rdt-table settings="settings" cellpadding="0" cellspacing="0" border="1"></table>' );
+                    rdtTable = angular.element( '<table rdt-table config="config" cellpadding="0" cellspacing="0" border="1"></table>' );
                     $compile(rdtTable)($rootScope);
 
                     // Render it
@@ -152,7 +154,7 @@ describe('directives', function() {
                     it('should render footer rows', function() {
                         var tFooter = rdtTable.find('tfoot tr');
                         expect(tFooter.length).toBeGreaterThan(0);
-                    })                
+                    })
                 });
 
             });

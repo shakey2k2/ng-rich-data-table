@@ -8,11 +8,11 @@ angular.module('rdt.directives', [])
         return {
         	restrict:'A',
             scope: {
-                settings: "="
+                config: "="
             },
             controller: function($scope) {
-                /*adding scope.settings to feed the directive*/
-                // $scope.settings = {
+                /*adding scope.config to feed the directive*/
+                // $scope.config = {
                 //     data : [
                 //         {name: "Moroni",  age: 50},
                 //         {name: "Tiancum", age: 43},
@@ -36,7 +36,7 @@ angular.module('rdt.directives', [])
                     
                 };
                 $scope.getColumnOrder = function(){
-                    return $scope.settings.columns[$scope.currentOrderByColumn].key;
+                    return $scope.config.settings.columns[$scope.currentOrderByColumn].key;
                 };
                 $scope.isActive = function ($index) {
                     if($index === $scope.currentOrderByColumn) {
