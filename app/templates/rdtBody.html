@@ -1,4 +1,4 @@
 
-<tr ng-repeat="row in config.data | orderBy: getColumnOrder() ">
+<tr ng-repeat="row in config.data | orderBy: getColumnOrder():reverseOrder ">
     <td ng-repeat="column in config.settings.columns" ng-hide="isHidden($index)">{{ getValue(row, column) }}</td>
 </tr>

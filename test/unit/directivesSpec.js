@@ -98,7 +98,6 @@ describe('directives', function() {
                         tBodyRows,
                         ageFirstRow,
                         ageLastRow;
-
                         // click second column to order by age
                         angular.element(theadCols[1]).click();
 
@@ -110,15 +109,34 @@ describe('directives', function() {
                         // test first and last rows after clicking
                         expect( parseInt(angular.element(ageFirstRow).html()) ).toBe(27);
                         expect( parseInt(angular.element(ageLastRow).html()) ).toBe(50);
-                        //console.log('full table after click: ' + angular.element(rdtTable).html());
 
+                    })
+
+                    it('should reverse the order of rows by age after clicking again', function() {
+                        var theadC = rdtTable.find('thead tr th' ),
+                            tBodyRows,
+                            ageFirstRow,
+                            ageLastRow;
+                        // click second column to order by age, first click
+                        angular.element(theadC[1]).click();
+                        // second click, reverse
+                        angular.element(theadC[1]).click();
+
+                        // highest age should be in the first row
+                        tBodyRows = rdtTable.find('tbody tr' ); 
+                        ageFirstRow = angular.element(tBodyRows[0]).find('td')[1];
+                        ageLastRow = angular.element(tBodyRows[4]).find('td')[1];
+
+                        // test first and last rows after clicking
+                        expect( parseInt(angular.element(ageFirstRow).html()) ).toBe(50);
+                        expect( parseInt(angular.element(ageLastRow).html()) ).toBe(27);
                     })
 
                     it('should order the rows by name after clicking', function() {
                         var theadCols = rdtTable.find('thead tr th' ),
-                        tBodyRows,
-                        nameFirstRow,
-                        nameLastRow;
+                            tBodyRows,
+                            nameFirstRow,
+                            nameLastRow;
 
                         // click first column to order by name
                         angular.element(theadCols[0]).click();
@@ -138,7 +156,6 @@ describe('directives', function() {
                     it('should hide the name column after clicking the hide name button', function() {
                         
                         var tableButtons = rdtTable.find('button');
-                        console.log('table buttons: ' + angular.element(tableButtons[0]).html() );
                         angular.element(tableButtons[0]).click();
                         var tableCells = rdtTable.find('tbody td');
 

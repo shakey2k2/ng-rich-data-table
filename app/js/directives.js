@@ -7,40 +7,47 @@ angular.module('rdt.directives', [])
     .directive('rdtTable', [ function($scope) {
         return {
         	restrict:'A',
-            scope: {
-                config: "="
-            },
+            // scope: {
+            //     config: "="
+            // },
             controller: function($scope) {
                 /*adding scope.config to feed the directive*/
-                // $scope.config = {
-                //     data : [
-                //         {name: "Moroni",  age: 50},
-                //         {name: "Tiancum", age: 43},
-                //         {name: "Jacob",   age: 27},
-                //         {name: "Nephi",   age: 29},
-                //         {name: "Enos",    age: 34}
-                //     ],
-                //     columns : [
-                //         { key: 'name', label: 'Name' },
-                //         { key: 'age',  label: 'Age'  }
-                //     ]
-                // };
+                $scope.config = {
+                    data : [
+                        {name: "Moroni",  age: 50},
+                        {name: "Tiancum", age: 43},
+                        {name: "Jacob",   age: 27},
+                        {name: "Nephi",   age: 29},
+                        {name: "Enos",    age: 34}
+                    ],
+                    settings: {
+                        columns : [
+                            { key: 'name', label: 'Name' },
+                            { key: 'age',  label: 'Age'  }
+                        ]
+                    }
+                };
                 
                 $scope.currentOrderByColumn = 0;
                 $scope.hiddenColumns = [];
+                $scope.reverseOrder = true;
                 $scope.getValue = function( data, columnDef ) {
                     return data[columnDef.key];
                 };
                 $scope.orderByColumn = function (columnIndex) {
+                    $scope.reverseOrder = !$scope.reverseOrder;
                     $scope.currentOrderByColumn = columnIndex;
-                    
                 };
                 $scope.getColumnOrder = function(){
                     return $scope.config.settings.columns[$scope.currentOrderByColumn].key;
                 };
-                $scope.isActive = function ($index) {
+                $scope.orderIsActive = function ($index) {
                     if($index === $scope.currentOrderByColumn) {
-                        return 'highlight';
+                        if($scope.reverseOrder){
+                            return 'order-active-reverse'; 
+                        }else {
+                           return 'order-active'; 
+                        }
                     }
                 };
                 $scope.hideShowColumn = function(columnIndex) {
