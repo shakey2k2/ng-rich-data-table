@@ -24,6 +24,10 @@ angular.module('rdt.directives', [])
                         columns : [
                             { key: 'name', label: 'Name' },
                             { key: 'age',  label: 'Age'  }
+                        ],
+                        useSearchInput: 1,  // display rdt toolbar
+                        filteringOptions: [
+                            {value: 'name', label: 'Name'}
                         ]
                     }
                 };
@@ -88,8 +92,14 @@ angular.module('rdt.directives', [])
     }])
     .directive('rdtFooter', [ function() {
         return {
+            restrict:'A',
+            templateUrl:'templates/rdtFooter.html',
+            replace: false
+        };
+    }]).directive('rdtToolbar', [ function() {
+        return {
         	restrict:'A',
-        	templateUrl:'templates/rdtFooter.html',
+        	templateUrl:'templates/rdtToolbar.html',
         	replace: false
         };
     }]);

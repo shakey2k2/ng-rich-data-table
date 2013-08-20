@@ -1,5 +1,8 @@
 /* app css stylesheet */
 
+table {
+  width: 50%;
+}
 td, th {
   font-family: sans-serif;
   font-size: 16px;

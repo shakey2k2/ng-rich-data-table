@@ -1,7 +1,7 @@
 module.exports = function( config ) {
     config.set({
         basePath: '../',
-        frameworks: ['ng-scenario'],
+        frameworks: ['jasmine'],
         files: [
             'test/e2e/**/*.js'
         ],

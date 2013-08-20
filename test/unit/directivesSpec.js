@@ -10,24 +10,29 @@ describe('directives', function() {
     beforeEach(module('templates/header.html'));
     beforeEach(module('templates/rdtBody.html'));
     beforeEach(module('templates/rdtFooter.html'));
+    beforeEach(module('templates/rdtToolbar.html'));
 
     describe('rdt-table', function() {
         describe('make sure the table got rendered', function() {
             var sampleData = {
-                data : [
-                    {name: "Moroni",  age: 50},
-                    {name: "Tiancum", age: 43},
-                    {name: "Jacob",   age: 27},
-                    {name: "Nephi",   age: 29},
-                    {name: "Enos",    age: 34}
-                ],
-                settings: {
-                    columns : [
-                        { key: 'name', label: 'Name' },
-                        { key: 'age',  label: 'Age'  }
-                    ]
-                }
-            };
+                    data : [
+                        {name: "Moroni",  age: 50},
+                        {name: "Tiancum", age: 43},
+                        {name: "Jacob",   age: 27},
+                        {name: "Nephi",   age: 29},
+                        {name: "Enos",    age: 34}
+                    ],
+                    settings: {
+                        columns : [
+                            { key: 'name', label: 'Name' },
+                            { key: 'age',  label: 'Age'  }
+                        ],
+                        useSearchInput: 1,  // display rdt toolbar
+                        filteringOptions: [
+                            {value: 'name', label: 'Name'}
+                        ]
+                    }
+                };
 
             describe('test that the table is rendered correctly', function() {
                 var rdtTable;
@@ -174,7 +179,40 @@ describe('directives', function() {
                     })
                 });
 
+                describe('filters', function() {
+                    // TODO: complete filter tests
+                    it('should filter by name in search input', function() {
+
+                        // insert enos in search input
+                        var searchInput = rdtTable.find('input');
+                        //input('searchInput').enter('enos');
+                        //console.log('input is:' +  searchInput().html());
+                        // check that other name cell is not visible
+                        // check if enos cell is visible
+                        expect(2).toBeGreaterThan(1); 
+                    })
+                });
+
+                describe('filters', function() {
+
+                    it('should filter by name in select options', function() {
+                        // select enos in selector
+                        // check that other name cell is not visible
+                        // check that enos cell is visible
+                        expect(2).toBeGreaterThan(1);
+                    })
+                });
+
+                describe('filters', function() {
+
+                    it('should display toolbar if is set in config', function() {
+                        // check if toolbar is visible
+                        expect(2).toBeGreaterThan(1);
+                    })
+                });
+                // extra filters: check if config values are used as filters
             });
+
         });
     });
 
