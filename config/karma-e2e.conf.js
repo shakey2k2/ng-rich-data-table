@@ -1,9 +1,16 @@
 module.exports = function( config ) {
     config.set({
-        basePath: '../',
+        basePath: '../app/',
         frameworks: ['jasmine'],
         files: [
-            'test/e2e/**/*.js'
+            'lib/jquery-1.7.1.min.js',
+            'lib/angular/angular.js',
+            'lib/angular/angular-*.js',
+            '../test/lib/angular/angular-mocks.js',
+            'js/**/*.js',
+
+            'templates/**/*.html',
+            '../test/e2e/*.js'
         ],
         autoWatch: false,
         browsers: ['Chrome'],
