@@ -184,9 +184,12 @@ describe('directives', function() {
                     it('should filter by name in search input', function() {
 
                         // insert enos in search input
-                        var searchInput = rdtTable.find('input');
+                        var searchInput = rdtTable.find(':input');
+                        angular.element(searchInput[0]).val('enos');
+
                         //input('searchInput').enter('enos');
-                        //console.log('input is:' +  searchInput().html());
+                        console.log('input is:' +  angular.element(searchInput[0]) );
+                        console.log('table is:' +  rdtTable.html());
                         // check that other name cell is not visible
                         // check if enos cell is visible
                         expect(2).toBeGreaterThan(1); 

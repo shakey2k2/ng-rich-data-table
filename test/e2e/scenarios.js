@@ -4,15 +4,15 @@
 
 describe('directives', function() {
     var $scope;
-
+/*
     beforeEach(angular.module('rdt.directives'));
     beforeEach(angular.module('templates/mainTable.html'));
     beforeEach(angular.module('templates/header.html'));
     beforeEach(angular.module('templates/rdtBody.html'));
     beforeEach(angular.module('templates/rdtFooter.html'));
     beforeEach(angular.module('templates/rdtToolbar.html'));
+*/
 
-    describe('rdt-table', function() {
         describe('make sure the table got rendered', function() {
             var sampleData = {
                     data : [
@@ -36,7 +36,7 @@ describe('directives', function() {
 
             describe('test that the table is rendered correctly', function() {
                 var rdtTable;
-
+/*
                 beforeEach(inject(function($rootScope, $compile) {
                     // Setup scope with data
                     $rootScope.config = sampleData;
@@ -48,7 +48,7 @@ describe('directives', function() {
                     // Render it
                     $rootScope.$digest();
                 }));
-
+*/
 /**************** tests  *****************/
                 describe('rich data table', function() {
 
@@ -64,14 +64,14 @@ describe('directives', function() {
                   describe('index', function() {
 
                     beforeEach(function() {
-                      browser().navigateTo('#/');
+                      browser().navigateTo('../../app/index.html');
                     });
 
 
                     it('should render index when user navigates to /index', function() {
                       expect(browser().location().url()).toBe("/");
                     });
-
+                    
                     it('should render input', function() {
                       expect(element('[ng-model="searchText"]').html()).
                         toMatch(/partial for view 1/);
@@ -117,7 +117,7 @@ describe('directives', function() {
             });
 
         });
-    });
+
 
 });
 
