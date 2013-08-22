@@ -2,9 +2,27 @@
 
 /* Filters */
 
-angular.module('myApp.filters', []).
-  filter('interpolate', ['version', function(version) {
-    return function(text) {
-      return String(text).replace(/\%VERSION\%/mg, version);
+angular.module('myApp.filters', [])
+  .filter('paginationFilter', [function() {
+    return function(rowItems, currentPageArr, itemsPerPage) {
+        console.log('currentPageArr is: ' + JSON.stringify(currentPageArr));
+        console.log('rowItem is: ' + JSON.stringify(rowItems));
+        console.log('itemsPerPage is: ' + itemsPerPage);
+        var currentPageRows = [];
+        if (!rowItems) {
+            return rowItems;
+        }
+        if (itemsPerPage) {
+            for (var i=0; i < itemsPerPage; i++ ) {
+                currentPageRows.push(rowItems[i]);
+            }
+
+            //return currentPageRows;
+            return currentPageArr;
+        } else {
+            return rowItems;
+        }
+
+
     }
   }]);

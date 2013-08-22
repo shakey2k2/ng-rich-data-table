@@ -18,7 +18,7 @@ angular.module('rdt.directives', [])
                         {name: "Tiancum", age: 43},
                         {name: "Jacob",   age: 27},
                         {name: "Nephi",   age: 29},
-                        {name: "Enos",    age: 34}
+                        {name: "Enos",    age: 10}
                         ,{"name":"Sheppard","age":68},{"name":"Rosella","age":13},{"name":"Tessa","age":87},{"name":"Emilia","age":25},{"name":"Vera","age":74},{"name":"Hallie","age":76},{"name":"Mullen","age":99},{"name":"Celeste","age":23},{"name":"Lorna","age":15},{"name":"Suzanne","age":75},{"name":"Lillie","age":34},{"name":"Crane","age":62},{"name":"Maryann","age":45},{"name":"Amalia","age":57},{"name":"Cooper","age":46},{"name":"Christine","age":70},{"name":"Ware","age":50},{"name":"Mary","age":87},{"name":"Dennis","age":31},{"name":"Kerri","age":81},{"name":"Ballard","age":27},{"name":"Bobbie","age":43},{"name":"Willis","age":73},{"name":"Larsen","age":69}
                     ],
                     settings: {
@@ -30,13 +30,32 @@ angular.module('rdt.directives', [])
                         filteringOptions: [
                             {value: 'name', label: 'Name'}
                         ],
-                        enablePagination: true,
-                        paginationOptions: [
-                            {pageSize: 5}
-                        ]
+
+                        paginationOptions:{
+                            pageSize: 3,
+                            enablePagination: true
+                        }
                     }
                 };
-                
+                // pagination
+                $scope.currentPage = 0;
+                $scope.totalPages = function() {
+                    // create total pages number array to use in rdtPagination directive ng-repeat
+                    return new Array( Math.ceil($scope.config.data.length / $scope.config.settings.paginationOptions.pageSize) );
+                };
+                $scope.goToPage = function(pageNumber) {
+                    event.preventDefault();
+                    console.log('goToPage: ' + pageNumber);
+                    $scope.currentPage = pageNumber;
+                };
+
+                $scope.getCurrentPageItems = function() {
+                    var pageItems = [];
+                    pageItems = $scope.config.data.slice($scope.currentPage * $scope.config.settings.paginationOptions.pageSize, ($scope.currentPage + 1) * ($scope.config.settings.paginationOptions.pageSize + 1)/*rows per page + 1*/  );
+                    //pageItems = $scope.config.data.slice(0, 3/*rows per page + 1*/  );
+                    return pageItems;
+                };
+
                 $scope.currentOrderByColumn = 0;
                 $scope.hiddenColumns = [];
                 $scope.reverseOrder = true;
@@ -50,10 +69,10 @@ angular.module('rdt.directives', [])
                 $scope.getColumnOrder = function(){
                     return $scope.config.settings.columns[$scope.currentOrderByColumn].key;
                 };
-                $scope.orderIsActive = function ($index) {
+                $scope.orderIsActive = function($index) {
                     if($index === $scope.currentOrderByColumn) {
                         if($scope.reverseOrder){
-                            return 'order-active-reverse'; 
+                           return 'order-active-reverse';
                         }else {
                            return 'order-active'; 
                         }

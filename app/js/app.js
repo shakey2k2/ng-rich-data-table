@@ -2,4 +2,4 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('myApp', ['rdt.directives', 'myApp.services']);
+angular.module('myApp', ['rdt.directives', 'myApp.services', 'myApp.filters']);
