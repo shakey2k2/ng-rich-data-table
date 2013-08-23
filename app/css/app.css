@@ -1,7 +1,14 @@
 /* app css stylesheet */
 
+body {
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
 table {
   width: 50%;
+  border-color: #ccc;
+  border-collapse: collapse;
 }
 
 td, th {
@@ -27,7 +34,9 @@ td, th {
   padding: 10px;
 }
 
-
+.rdt-pagination ul li a {
+  text-decoration: none;
+}
 
 .menu {
   list-style: none;

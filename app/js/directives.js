@@ -37,22 +37,24 @@ angular.module('rdt.directives', [])
                     }
                 };
                 // pagination
-                $scope.currentPage = 0;
-                $scope.totalPages = function() {
-                    // create total pages number array to use in rdtPagination directive ng-repeat
-                    return new Array( Math.ceil($scope.config.data.length / $scope.config.settings.paginationOptions.pageSize) );
-                };
-                $scope.goToPage = function(pageNumber) {
-                    event.preventDefault();
-                    console.log('goToPage: ' + pageNumber);
-                    $scope.currentPage = pageNumber;
+                $scope.pagination = {
+                    currentPage : 0,
+                    totalPages : function() {
+                        // create total pages number array to use in rdtPagination directive ng-repeat
+                        return new Array( Math.ceil($scope.config.data.length / $scope.config.settings.paginationOptions.pageSize) );
+                    },
+                    goToPage : function(pageNumber) {
+                        event.preventDefault();
+                        //console.log('goToPage: ' + pageNumber);
+                        $scope.pagination.currentPage = pageNumber;
+                    },
+                    getCurrentPageItems : function() {
+                        var pageItems = [];
+                        pageItems = $scope.config.data.slice($scope.pagination.currentPage * $scope.config.settings.paginationOptions.pageSize, ($scope.pagination.currentPage + 1) * ($scope.config.settings.paginationOptions.pageSize));
+                        return pageItems;
+                    }
                 };
 
-                $scope.getCurrentPageItems = function() {
-                    var pageItems = [];
-                    pageItems = $scope.config.data.slice($scope.currentPage * $scope.config.settings.paginationOptions.pageSize, ($scope.currentPage + 1) * ($scope.config.settings.paginationOptions.pageSize));
-                    return pageItems;
-                };
 
                 $scope.currentOrderByColumn = 0;
                 $scope.hiddenColumns = [];
