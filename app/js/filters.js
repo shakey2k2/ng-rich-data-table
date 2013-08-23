@@ -17,7 +17,7 @@ angular.module('myApp.filters', [])
                 currentPageRows.push(rowItems[i]);
             }
             return currentPageArr;
-        } else {
+        } else {  // this condition is set when there is no itemsPerPage parameter set up, so it will return the whole model
             return rowItems;
         }
 
