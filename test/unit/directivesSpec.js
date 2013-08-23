@@ -6,11 +6,13 @@ describe('directives', function() {
     var $scope;
 
     beforeEach(module('rdt.directives'));
+    beforeEach(module('myApp.filters'));
     beforeEach(module('templates/mainTable.html'));
     beforeEach(module('templates/header.html'));
     beforeEach(module('templates/rdtBody.html'));
     beforeEach(module('templates/rdtFooter.html'));
     beforeEach(module('templates/rdtToolbar.html'));
+    beforeEach(module('templates/rdtPagination.html'));
 
     describe('rdt-table', function() {
         describe('make sure the table got rendered', function() {
@@ -188,8 +190,8 @@ describe('directives', function() {
                         angular.element(searchInput[0]).val('enos');
 
                         //input('searchInput').enter('enos');
-                        console.log('input is:' +  angular.element(searchInput[0]) );
-                        console.log('table is:' +  rdtTable.html());
+//                        console.log('input is:' +  angular.element(searchInput[0]) );
+//                        console.log('table is:' +  rdtTable.html());
                         // check that other name cell is not visible
                         // check if enos cell is visible
                         expect(2).toBeGreaterThan(1); 
