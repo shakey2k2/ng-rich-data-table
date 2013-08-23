@@ -17,6 +17,9 @@ td, th {
   background-color: #0066FF;
 }
 
+.activePage {
+  background-color: #0099FF;
+}
 
 .rdt-pagination ul li {
   float: left;

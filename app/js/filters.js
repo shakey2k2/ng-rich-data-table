@@ -5,9 +5,9 @@
 angular.module('myApp.filters', [])
   .filter('paginationFilter', [function() {
     return function(rowItems, currentPageArr, itemsPerPage) {
-        console.log('currentPageArr is: ' + JSON.stringify(currentPageArr));
+//        console.log('currentPageArr is: ' + JSON.stringify(currentPageArr));
         console.log('rowItem is: ' + JSON.stringify(rowItems));
-        console.log('itemsPerPage is: ' + itemsPerPage);
+//        console.log('itemsPerPage is: ' + itemsPerPage);
         var currentPageRows = [];
         if (!rowItems) {
             return rowItems;
@@ -16,8 +16,6 @@ angular.module('myApp.filters', [])
             for (var i=0; i < itemsPerPage; i++ ) {
                 currentPageRows.push(rowItems[i]);
             }
-
-            //return currentPageRows;
             return currentPageArr;
         } else {
             return rowItems;

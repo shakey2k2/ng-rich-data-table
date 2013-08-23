@@ -1,3 +1,5 @@
 <ul>
-    <li ng-repeat="pageNum in totalPages()" ng-click="goToPage($index)"><a href="#">{{ $index + 1 }}</a></li>
+    <li ng-click="goToPage(0)"><a href="#">First</a></li>
+    <li ng-repeat="pageNum in totalPages()" ng-click="goToPage($index)" ng-class="{activePage: currentPage==$index}"><a href="#">{{ $index + 1 }}</a></li>
+    <li ng-click="goToPage(totalPages().length-1)"><a href="#">Last</a></li>
 </ul>

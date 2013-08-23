@@ -30,9 +30,8 @@ angular.module('rdt.directives', [])
                         filteringOptions: [
                             {value: 'name', label: 'Name'}
                         ],
-
                         paginationOptions:{
-                            pageSize: 3,
+                            pageSize: 5,
                             enablePagination: true
                         }
                     }
@@ -51,8 +50,7 @@ angular.module('rdt.directives', [])
 
                 $scope.getCurrentPageItems = function() {
                     var pageItems = [];
-                    pageItems = $scope.config.data.slice($scope.currentPage * $scope.config.settings.paginationOptions.pageSize, ($scope.currentPage + 1) * ($scope.config.settings.paginationOptions.pageSize + 1)/*rows per page + 1*/  );
-                    //pageItems = $scope.config.data.slice(0, 3/*rows per page + 1*/  );
+                    pageItems = $scope.config.data.slice($scope.currentPage * $scope.config.settings.paginationOptions.pageSize, ($scope.currentPage + 1) * ($scope.config.settings.paginationOptions.pageSize));
                     return pageItems;
                 };
 
