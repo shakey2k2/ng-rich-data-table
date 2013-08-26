@@ -27,6 +27,9 @@ td, th {
 .activePage {
   background-color: #0099FF;
 }
+.highVisGreen {
+  background-color: yellowgreen;
+}
 
 .rdt-pagination ul li {
   float: left;

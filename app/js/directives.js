@@ -23,8 +23,8 @@ angular.module('rdt.directives', [])
                     ],
                     settings: {
                         columns : [
-                            { key: 'name', label: 'Name' },
-                            { key: 'age',  label: 'Age'  }
+                            { key: 'name', label: 'Name', columnClass:'highVisGreen', tmpl:'<h1>test inner template</h1>' },
+                            { key: 'age',  label: 'Age', columnClass:''  }
                         ],
                         useSearchInput: true,  // display rdt toolbar
                         filteringOptions: [
@@ -94,6 +94,12 @@ angular.module('rdt.directives', [])
                     }else {
                         return false;
                     }
+                };
+                $scope.getCustomColClass = function(columnIndex) {
+                   // get column class from config according to column index
+                   if (columnIndex !== undefined){
+                        return $scope.config.settings.columns[columnIndex].columnClass;
+                   }
                 };
             },
         	templateUrl:'templates/mainTable.html',
