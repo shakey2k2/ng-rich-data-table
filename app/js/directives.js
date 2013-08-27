@@ -23,7 +23,7 @@ angular.module('rdt.directives', [])
                     ],
                     settings: {
                         columns : [
-                            { key: 'name', label: 'Name', columnClass:'highVisGreen', customTmpl:'<h1>test inner template</h1>' },
+                            { key: 'name', label: 'Name', columnClass:'highVisGreen', customTmpl:'<a href="view/id/{{ getValue(row, column) }}"><img src="img/view.png"></a><a href="resend/id/{{ getValue(row, column) }}"><img src="img/resend.png"></a>' },
                             { key: 'age',  label: 'Age', columnClass:''  }
                         ],
                         useSearchInput: true,  // display rdt toolbar
@@ -138,10 +138,48 @@ angular.module('rdt.directives', [])
         	templateUrl:'templates/rdtPagination.html',
         	replace: false
         };
-    }]).directive('rdtActionButtons', [ function() {  // delete?
+    }]).directive('rdtTdContent', ['$compile', function($compile) {
+        var simpleDataTmpl = '{{ getValue(row, column) }}',
+            actionBtnsTmpl = '<a href="view/id/{{ getValue(row, column) }}"><img src="img/view.png"></a><a href="resend/id/{{ getValue(row, column) }}"><img src="img/resend.png"></a>';
+        var getTemplate = function(contentType) {
+            var contentTmpl = '';
+
+
+            switch (contentType) {
+                case 'simple':
+                    contentTmpl = simpleDataTmpl;
+                    console.log('case simple');
+                    break;
+                case 'actionbutton':
+                    contentTmpl = actionBtnsTmpl;
+                    console.log('case actionbutton');
+                    break;
+                default:
+                    contentTmpl = simpleDataTmpl;
+                    break;
+            }
+
+            return contentTmpl;
+        };
+
+        var linker = function(scope, element, attrs) {
+            console.log('scope column class:' + scope.config.settings.columns[0].columnClass);
+            if (scope.config.settings.columns[1].key == 'age') {
+                element.html(getTemplate('actionbutton')).show();
+                // TODO: to get the template from column definition, pass as parameter
+                //element.html(getTemplate( scope.config.settings.columns[0].customTmpl )).show();
+                console.log('equals age precompile');
+            }else {
+                element.html(getTemplate('simple')).show();
+            }
+            console.log(scope.config.settings.columns[0].key);
+            $compile(element.contents())(scope);
+        };
+
         return {
         	restrict:'A',
-        	templateUrl:'templates/rdtActionButtons.html',
-        	replace: false
+            link: linker,
+        	//templateUrl:'templates/rdtTdContent.html',
+        	replace: true
         };
     }]);
