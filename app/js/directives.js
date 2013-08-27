@@ -23,7 +23,7 @@ angular.module('rdt.directives', [])
                     ],
                     settings: {
                         columns : [
-                            { key: 'name', label: 'Name', columnClass:'highVisGreen', tmpl:'<h1>test inner template</h1>' },
+                            { key: 'name', label: 'Name', columnClass:'highVisGreen', customTmpl:'<h1>test inner template</h1>' },
                             { key: 'age',  label: 'Age', columnClass:''  }
                         ],
                         useSearchInput: true,  // display rdt toolbar
@@ -136,6 +136,12 @@ angular.module('rdt.directives', [])
         return {
         	restrict:'A',
         	templateUrl:'templates/rdtPagination.html',
+        	replace: false
+        };
+    }]).directive('rdtActionButtons', [ function() {  // delete?
+        return {
+        	restrict:'A',
+        	templateUrl:'templates/rdtActionButtons.html',
         	replace: false
         };
     }]);
