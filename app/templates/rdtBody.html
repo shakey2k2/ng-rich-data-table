@@ -1,5 +1,5 @@
 <tr ng-repeat="row in config.data | paginationFilter:pagination.getCurrentPageItems():config.settings.paginationOptions.pageSize| orderBy: getColumnOrder():reverseOrder | filter:searchText">
-    <td rdt-td-content ng-repeat="column in config.settings.columns" ng-class="getCustomColClass($index,column)" ng-hide="isHidden($index)">
+    <td rdt-td-content tdindex="{{$index}}" ng-repeat="column in config.settings.columns" ng-class="getCustomColClass($index,column)" ng-hide="isHidden($index)">
         <!--<div>{{ getValue(row, column) }}</div>-->
     </td>
 </tr>

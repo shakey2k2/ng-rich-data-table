@@ -163,21 +163,27 @@ angular.module('rdt.directives', [])
         };
 
         var linker = function(scope, element, attrs) {
-            console.log('scope column class:' + scope.config.settings.columns[0].columnClass);
-            if (scope.config.settings.columns[1].key == 'age') {
+            //console.log('scope column class:' + scope.$parent.config.settings.columns[0].columnClass);
+            if (scope.$parent.$index !== 0) {
                 element.html(getTemplate('actionbutton')).show();
                 // TODO: to get the template from column definition, pass as parameter
                 //element.html(getTemplate( scope.config.settings.columns[0].customTmpl )).show();
                 console.log('equals age precompile');
+                console.log(scope.$parent.config.data);
             }else {
                 element.html(getTemplate('simple')).show();
             }
-            console.log(scope.config.settings.columns[0].key);
-            $compile(element.contents())(scope);
+            //console.log(scope.$parent.config.settings.columns[0].key);
+            console.log('tdindex is:' + scope.$parent.$index);
+            $compile(element.contents())(scope.$parent);
         };
 
         return {
         	restrict:'A',
+            scope: {
+                parent: '@',
+                tdindex: '@'
+            },
             link: linker,
         	//templateUrl:'templates/rdtTdContent.html',
         	replace: true
