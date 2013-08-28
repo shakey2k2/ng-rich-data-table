@@ -24,7 +24,7 @@ angular.module('rdt.directives', [])
                     settings: {
                         columns : [
                             { key: 'name', label: 'Name', columnClass:'highVisGreen' },
-                            { key: 'age',  label: 'Age', columnClass:'', customTmpl:'<a href="view/id/{{ getValue(row, column) }}"><img src="img/view.png"></a><a href="resend/id/{{ getValue(row, column) }}"><img src="img/resend.png"></a>'  }
+                            { key: 'age',  label: 'Age', columnClass:'', customTmpl:'<a ng-href="view/id/{{ getValue(row, column) }}"><img src="img/view.png" alt="{{ getValue(row, column) }}"></a><a ng-href="resend/id/{{ getValue(row, column) }}"><img src="img/resend.png" alt="{{ getValue(row, column) }}"></a>'  }
                         ],
                         useSearchInput: true,  // display rdt toolbar
                         filteringOptions: [
@@ -55,9 +55,6 @@ angular.module('rdt.directives', [])
                     }
                 };
 
-                $scope.testMessage = function(){
-                    console.log('test message');
-                };
                 $scope.currentOrderByColumn = 0;
                 $scope.hiddenColumns = [];
                 $scope.reverseOrder = true;
@@ -161,7 +158,6 @@ angular.module('rdt.directives', [])
             columnIndex = scope.$index;
             columnTmplDefinition = scope.config.settings.columns[columnIndex].customTmpl;
 
-            console.log('hidden cols' + scope.hiddenColumns);
             element.html(getTemplate(columnTmplDefinition)).show();
             $compile(element.contents())(scope);
         };
