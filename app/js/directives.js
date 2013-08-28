@@ -55,7 +55,9 @@ angular.module('rdt.directives', [])
                     }
                 };
 
-
+                $scope.testMessage = function(){
+                    console.log('test message');
+                };
                 $scope.currentOrderByColumn = 0;
                 $scope.hiddenColumns = [];
                 $scope.reverseOrder = true;
@@ -146,7 +148,7 @@ angular.module('rdt.directives', [])
         var getTemplate = function(columnTmplDefinition) {
             var contentTmpl = '';
 
-            // check if there is a template in the column definitions
+            // check if there is a corresponding template in column definition
             if (typeof columnTmplDefinition !== 'undefined') {
                 contentTmpl = columnTmplDefinition;
             }else {
@@ -156,18 +158,16 @@ angular.module('rdt.directives', [])
         };
 
         var linker = function(scope, element, attrs) {
-            columnIndex = scope.$parent.$index,
-            columnTmplDefinition = scope.$parent.config.settings.columns[columnIndex].customTmpl;
+            columnIndex = scope.$index;
+            columnTmplDefinition = scope.config.settings.columns[columnIndex].customTmpl;
 
+            console.log('hidden cols' + scope.hiddenColumns);
             element.html(getTemplate(columnTmplDefinition)).show();
-            $compile(element.contents())(scope.$parent);
+            $compile(element.contents())(scope);
         };
 
         return {
         	restrict:'A',
-            scope: {
-                parent: '@'
-            },
             link: linker,
         	replace: true
         };
