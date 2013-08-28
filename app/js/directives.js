@@ -23,8 +23,8 @@ angular.module('rdt.directives', [])
                     ],
                     settings: {
                         columns : [
-                            { key: 'name', label: 'Name', columnClass:'highVisGreen', customTmpl:'<a href="view/id/{{ getValue(row, column) }}"><img src="img/view.png"></a><a href="resend/id/{{ getValue(row, column) }}"><img src="img/resend.png"></a>' },
-                            { key: 'age',  label: 'Age', columnClass:''  }
+                            { key: 'name', label: 'Name', columnClass:'highVisGreen' },
+                            { key: 'age',  label: 'Age', columnClass:'', customTmpl:'<a href="view/id/{{ getValue(row, column) }}"><img src="img/view.png"></a><a href="resend/id/{{ getValue(row, column) }}"><img src="img/resend.png"></a>'  }
                         ],
                         useSearchInput: true,  // display rdt toolbar
                         filteringOptions: [
@@ -140,52 +140,35 @@ angular.module('rdt.directives', [])
         };
     }]).directive('rdtTdContent', ['$compile', function($compile) {
         var simpleDataTmpl = '{{ getValue(row, column) }}',
-            actionBtnsTmpl = '<a href="view/id/{{ getValue(row, column) }}"><img src="img/view.png"></a><a href="resend/id/{{ getValue(row, column) }}"><img src="img/resend.png"></a>';
-        var getTemplate = function(contentType) {
+            columnIndex,
+            columnTmplDefinition;
+
+        var getTemplate = function(columnTmplDefinition) {
             var contentTmpl = '';
 
-
-            switch (contentType) {
-                case 'simple':
-                    contentTmpl = simpleDataTmpl;
-                    console.log('case simple');
-                    break;
-                case 'actionbutton':
-                    contentTmpl = actionBtnsTmpl;
-                    console.log('case actionbutton');
-                    break;
-                default:
-                    contentTmpl = simpleDataTmpl;
-                    break;
+            // check if there is a template in the column definitions
+            if (typeof columnTmplDefinition !== 'undefined') {
+                contentTmpl = columnTmplDefinition;
+            }else {
+                contentTmpl = simpleDataTmpl;
             }
-
             return contentTmpl;
         };
 
         var linker = function(scope, element, attrs) {
-            //console.log('scope column class:' + scope.$parent.config.settings.columns[0].columnClass);
-            if (scope.$parent.$index !== 0) {
-                element.html(getTemplate('actionbutton')).show();
-                // TODO: to get the template from column definition, pass as parameter
-                //element.html(getTemplate( scope.config.settings.columns[0].customTmpl )).show();
-                console.log('equals age precompile');
-                console.log(scope.$parent.config.data);
-            }else {
-                element.html(getTemplate('simple')).show();
-            }
-            //console.log(scope.$parent.config.settings.columns[0].key);
-            console.log('tdindex is:' + scope.$parent.$index);
+            columnIndex = scope.$parent.$index,
+            columnTmplDefinition = scope.$parent.config.settings.columns[columnIndex].customTmpl;
+
+            element.html(getTemplate(columnTmplDefinition)).show();
             $compile(element.contents())(scope.$parent);
         };
 
         return {
         	restrict:'A',
             scope: {
-                parent: '@',
-                tdindex: '@'
+                parent: '@'
             },
             link: linker,
-        	//templateUrl:'templates/rdtTdContent.html',
         	replace: true
         };
     }]);
