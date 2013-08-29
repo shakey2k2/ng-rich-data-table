@@ -24,7 +24,7 @@ angular.module('rdt.directives', [])
                     settings: {
                         columns : [
                             { key: 'name', label: 'Name', columnClass:'highVisGreen' },
-                            { key: 'age',  label: 'Age', columnClass:'', customTmpl:'<a ng-href="view/id/{{ getValue(row, column) }}"><img src="img/view.png" alt="{{ getValue(row, column) }}"></a><a ng-href="resend/id/{{ getValue(row, column) }}"><img src="img/resend.png" alt="{{ getValue(row, column) }}"></a>'  }
+                            { key: 'age',  label: 'Age', columnClass:'', customTmpl:'rdtActionButtons.html'  }
                         ],
                         useSearchInput: true,  // display rdt toolbar
                         filteringOptions: [
@@ -44,7 +44,6 @@ angular.module('rdt.directives', [])
                         return new Array( Math.ceil($scope.config.data.length / $scope.config.settings.paginationOptions.pageSize) );
                     },
                     goToPage : function(pageNumber) {
-                        event.preventDefault();
                         //console.log('goToPage: ' + pageNumber);
                         $scope.pagination.currentPage = pageNumber;
                     },
@@ -125,29 +124,57 @@ angular.module('rdt.directives', [])
             templateUrl:'templates/rdtFooter.html',
             replace: false
         };
-    }]).directive('rdtToolbar', [ function() {
+    }])
+    .directive('rdtToolbar', [ function() {
         return {
             restrict:'A',
             templateUrl:'templates/rdtToolbar.html',
             replace: false
         };
-    }]).directive('rdtPagination', [ function() {
+    }])
+    .directive('rdtPagination', [ function() {
         return {
         	restrict:'A',
         	templateUrl:'templates/rdtPagination.html',
         	replace: false
         };
-    }]).directive('rdtTdContent', ['$compile', function($compile) {
+    }])
+    .directive('rdtTdContent', ['$compile', '$templateCache','$http', function($compile,$templateCache,$http) {
         var simpleDataTmpl = '{{ getValue(row, column) }}',
             columnIndex,
             columnTmplDefinition;
 
+        // get custom templates
+        var customColTmplPaths = ['templates/rdtActionButtons.html'];
+        // custom templates request
+        $http.get(customColTmplPaths[0],{cache:$templateCache}).then(function(result) {
+            console.log('after .then: ' + JSON.stringify(result));
+            console.log('after .then result.data: ' + result.data);
+        });
+        // getting and caching custom column templates when the directive is created option 1
+        var getCustomTemplates = function(columnDefs){
+            var tmplBaseDir = 'templates/';
+            for (var i=0; i<columnDefs.length; i++) {
+                if (typeof columnDefs[i] !== 'undefined') {
+                    $http.get(columnDefs[i],{cache:$templateCache}).then(function(result) {
+                        console.log('after .then: ' + JSON.stringify(result));
+                        console.log('after .then result.data: ' + result.data);
+                    });
+                }
+            }
+        };
+        //getCustomTemplates($scope.config.settings.columns);
+
         var getTemplate = function(columnTmplDefinition) {
             var contentTmpl = '';
+
+
+            //$templateCache.get(customColTmplPaths[0]).then(function(result){console.log('$templateCache inside getTemplate():' + result.data); });
 
             // check if there is a corresponding template in column definition
             if (typeof columnTmplDefinition !== 'undefined') {
                 contentTmpl = columnTmplDefinition;
+                //contentTmpl = $templateCache.get(columnTmplDefinition);
             }else {
                 contentTmpl = simpleDataTmpl;
             }
