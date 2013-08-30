@@ -24,7 +24,8 @@ angular.module('rdt.directives', [])
                     settings: {
                         columns : [
                             { key: 'name', label: 'Name', columnClass:'highVisGreen' },
-                            { key: 'age',  label: 'Age', columnClass:'', customTmpl:'rdtActionButtons.html'  }
+                            { key: 'age',  label: 'Age', columnClass:'', customTmpl:'rdtActionButtons.html'  },
+                            { key: 'extracol',  label: 'ExtraColumn', columnClass:'', customTmpl:'rdtIcons.html'  }
                         ],
                         useSearchInput: true,  // display rdt toolbar
                         filteringOptions: [
@@ -44,7 +45,6 @@ angular.module('rdt.directives', [])
                         return new Array( Math.ceil($scope.config.data.length / $scope.config.settings.paginationOptions.pageSize) );
                     },
                     goToPage : function(pageNumber) {
-                        //console.log('goToPage: ' + pageNumber);
                         $scope.pagination.currentPage = pageNumber;
                     },
                     getCurrentPageItems : function() {
@@ -59,6 +59,9 @@ angular.module('rdt.directives', [])
                 $scope.reverseOrder = true;
                 $scope.getValue = function( data, columnDef ) {
                     return data[columnDef.key];
+                };
+                $scope.getValueFromRow = function(row, itemKey){
+                    return row[itemKey];
                 };
                 $scope.orderByColumn = function (columnIndex) {
                     $scope.reverseOrder = !$scope.reverseOrder;
