@@ -10,7 +10,7 @@ angular.module('rdt.directives', [])
             // scope: {
             //     config: "="
             // },
-            controller: function($scope) {
+            controller: function($scope,$http,$templateCache) {
                 /*adding scope.config to feed the directive*/
                 $scope.config = {
                     data : [
@@ -99,6 +99,10 @@ angular.module('rdt.directives', [])
                         return $scope.config.settings.columns[columnIndex].columnClass;
                    }
                 };
+                // template storage object for these directives
+                $scope.currentTemplates = {
+                   default: ''
+                };
             },
         	templateUrl:'templates/mainTable.html',
         	replace: false
@@ -143,33 +147,13 @@ angular.module('rdt.directives', [])
         var simpleDataTmpl = '{{ getValue(row, column) }}',
             columnIndex,
             columnTmplDefinition;
+        var tmplBaseDir = 'templates/';
+        var templateMap = {};
+        var templateLoader;
 
-        // get custom templates
-        var customColTmplPaths = ['templates/rdtActionButtons.html'];
-        // custom templates request
-        $http.get(customColTmplPaths[0],{cache:$templateCache}).then(function(result) {
-            console.log('after .then: ' + JSON.stringify(result));
-            console.log('after .then result.data: ' + result.data);
-        });
-        // getting and caching custom column templates when the directive is created option 1
-        var getCustomTemplates = function(columnDefs){
-            var tmplBaseDir = 'templates/';
-            for (var i=0; i<columnDefs.length; i++) {
-                if (typeof columnDefs[i] !== 'undefined') {
-                    $http.get(columnDefs[i],{cache:$templateCache}).then(function(result) {
-                        console.log('after .then: ' + JSON.stringify(result));
-                        console.log('after .then result.data: ' + result.data);
-                    });
-                }
-            }
-        };
-        //getCustomTemplates($scope.config.settings.columns);
 
         var getTemplate = function(columnTmplDefinition) {
             var contentTmpl = '';
-
-
-            //$templateCache.get(customColTmplPaths[0]).then(function(result){console.log('$templateCache inside getTemplate():' + result.data); });
 
             // check if there is a corresponding template in column definition
             if (typeof columnTmplDefinition !== 'undefined') {
@@ -184,11 +168,28 @@ angular.module('rdt.directives', [])
         var linker = function(scope, element, attrs) {
             columnIndex = scope.$index;
             columnTmplDefinition = scope.config.settings.columns[columnIndex].customTmpl;
-
-            element.html(getTemplate(columnTmplDefinition)).show();
-            $compile(element.contents())(scope);
+            var tmplBaseDir = 'templates/';
+            // check column defs
+            if (typeof columnTmplDefinition !== 'undefined') {
+                // needs a template according to column definition so checks if that template was set before in templateMap
+                if (typeof templateMap[columnTmplDefinition] !== "undefined") {
+                    // get template content from templateMap object if wasn't stored
+                    element.html(getTemplate(templateMap[columnTmplDefinition])).show();
+                    $compile(element.contents())(scope);
+                } else {
+                    // get template from separate file using $http and compile
+                    $http.get(tmplBaseDir+columnTmplDefinition,{cache:$templateCache}).then(function(result) {
+                        templateMap[ result.url ] = result.data;
+                        element.html(getTemplate(result.data)).show();
+                        $compile(element.contents())(scope);
+                    });
+                }
+            } else {
+                // uses no template
+                element.html(getTemplate(columnTmplDefinition)).show();
+                $compile(element.contents())(scope);
+            }
         };
-
         return {
         	restrict:'A',
             link: linker,
