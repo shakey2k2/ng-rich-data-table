@@ -1,6 +1,6 @@
 <div>
 	Search:<input ng-model="searchText" type="text" name="searchInput">
-	<select ng-model="searchText">
+	<select ng-model="searchText" >
 		<option value="">-- select --</option>
 		<option ng-repeat="item in config.data" value="{{ item.name }}">{{ item[config.settings.filteringOptions[0].value] }}</option>
 	</select>

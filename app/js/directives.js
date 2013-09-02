@@ -95,20 +95,6 @@ angular.module('rdt.directives', [])
                 $scope.getValueFromRow = function(row, itemKey){
                     return row[itemKey];
                 };
-                $scope.getObjKeys = function(columnKey) {
-                    /* EXPERIMENT */
-                    var keys = [];
-                    var dataSetObj = $scope.config.data;
-                    for (var key in dataSetObj) {
-                        if (dataSetObj.hasOwnProperty(key)) {
-                            keys.push(key);
-                        }
-                    }
-                    console.log('KEYS IS: ' + keys);
-                    return keys;
-
-                    /* EXPERIMENT */
-                };
                 $scope.sortByKey = function(field, reverse, primer){
                     var key = function (x) {return primer ? primer(x[field]) : x[field]};
 
@@ -128,10 +114,13 @@ angular.module('rdt.directives', [])
                     $scope.currentOrderByColumn = indexColumn;
                     console.log('DATASETOBJ NOW IS: ' + dataSetObj);
                 };
-                $scope.orderByColumn = function (columnIndex) {
-                    $scope.reverseOrder = !$scope.reverseOrder;
-                    $scope.currentOrderByColumn = columnIndex;
-
+                $scope.filterResults = function(elem) {
+                    console.log('ELEM IS: ' + elem);
+                    if(! $scope.searchText) {
+                        return true;
+                    } else {
+                        return elem.name.toLowerCase().indexOf( scope.searchText.toLowerCase()) == 0;
+                    }
                 };
                 $scope.getColumnOrder = function(){
                     return $scope.config.settings.columns[$scope.currentOrderByColumn].key;
