@@ -51,6 +51,38 @@ angular.module('rdt.directives', [])
                         var pageItems = [];
                         pageItems = $scope.config.data.slice($scope.pagination.currentPage * $scope.config.settings.paginationOptions.pageSize, ($scope.pagination.currentPage + 1) * ($scope.config.settings.paginationOptions.pageSize));
                         return pageItems;
+                    },
+                    paginate : function(rowItems, currentPageArr, itemsPerPage, currentRow, rowIndex) {
+                        console.log('currentPageArr is: ' + JSON.stringify(currentPageArr));
+                        //console.log('TOTAL rowItems is: ' + JSON.stringify(rowItems));
+                        console.log('$scope.pagination.currentPage is: ' + $scope.pagination.currentPage);
+                        console.log('itemsPerPage is: ' + itemsPerPage);
+                        console.log('current row is: ' + JSON.stringify(currentRow));
+                        console.log('current row $$hashKey is: ' + JSON.stringify(currentRow.$$hashKey));
+                        console.log('current row $index is: ' + rowIndex);
+
+                        var currentPageRows = [];
+//                        if (!rowItems) {
+//                            return rowItems;
+//                        }
+                        if (itemsPerPage) {
+                            for (var i=0; i < currentPageArr.length; i++ ) {
+                                currentPageRows.push(currentPageArr[i].$$hashKey);
+                            }
+                            //return currentPageArr;
+                            console.log('IN ARRAY: ' + angular.element.inArray(currentRow.$$hashKey, currentPageRows));
+                            console.log('COMPLETE IN ARRAY: ' + currentPageRows);
+                            // if the item is in the current page return false, if not return true
+                            // create a hashkey array ^^
+                            // if the current row is not in this page array (-1) return true to hide
+                            // TODO pagination should display items grouped by index position, not by hashes
+                            if (angular.element.inArray(currentRow.$$hashKey, currentPageRows) === -1) {
+                                return true;
+                            }
+
+                        } else {  // this condition is set when there is no itemsPerPage parameter set up, so it will return the whole model
+                            return false;
+                        }
                     }
                 };
 
@@ -63,9 +95,43 @@ angular.module('rdt.directives', [])
                 $scope.getValueFromRow = function(row, itemKey){
                     return row[itemKey];
                 };
+                $scope.getObjKeys = function(columnKey) {
+                    /* EXPERIMENT */
+                    var keys = [];
+                    var dataSetObj = $scope.config.data;
+                    for (var key in dataSetObj) {
+                        if (dataSetObj.hasOwnProperty(key)) {
+                            keys.push(key);
+                        }
+                    }
+                    console.log('KEYS IS: ' + keys);
+                    return keys;
+
+                    /* EXPERIMENT */
+                };
+                $scope.sortByKey = function(field, reverse, primer){
+                    var key = function (x) {return primer ? primer(x[field]) : x[field]};
+
+                    return function (a,b) {
+                        var A = key(a), B = key(b);
+                        return ( (A < B) ? -1 : ((A > B) ? 1 : 0) ) * [-1,1][+!!reverse];
+                    }
+                };
+                $scope.sorting = function(indexColumn) {
+                    var dataSetObj = $scope.config.data,
+                        sortingKey = $scope.config.settings.columns[indexColumn].key;
+
+                    console.log('SORTING KEY IS: ' + sortingKey);
+                    console.log('DATASETOBJ BEFORE SORTING IS: ' + dataSetObj);
+                    dataSetObj.sort($scope.sortByKey(sortingKey,$scope.reverseOrder,function(a){return a}));
+                    $scope.reverseOrder = !$scope.reverseOrder;
+                    $scope.currentOrderByColumn = indexColumn;
+                    console.log('DATASETOBJ NOW IS: ' + dataSetObj);
+                };
                 $scope.orderByColumn = function (columnIndex) {
                     $scope.reverseOrder = !$scope.reverseOrder;
                     $scope.currentOrderByColumn = columnIndex;
+
                 };
                 $scope.getColumnOrder = function(){
                     return $scope.config.settings.columns[$scope.currentOrderByColumn].key;

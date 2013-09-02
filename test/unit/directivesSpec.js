@@ -13,6 +13,8 @@ describe('directives', function() {
     beforeEach(module('templates/rdtFooter.html'));
     beforeEach(module('templates/rdtToolbar.html'));
     beforeEach(module('templates/rdtPagination.html'));
+    beforeEach(module('templates/rdtActionButtons.html'));
+    beforeEach(module('templates/rdtIcons.html'));
 
     describe('rdt-table', function() {
         describe('make sure the table got rendered', function() {
