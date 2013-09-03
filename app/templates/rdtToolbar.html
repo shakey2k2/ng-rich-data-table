@@ -1,8 +1,11 @@
 <div>
-	Search:<input ng-model="searchText" type="text" name="searchInput" ng-class="{active: isSearchTextActive}">
-	<select ng-model="searchDropdown"  ng-change="showDropdownResults()" ng-class="{active: isDropdownActive}">
-		<option value="">-- select --</option>
-		<option ng-repeat="item in config.data" value="{{ item[config.settings.filteringOptions[0].value] }}" >{{ item[config.settings.filteringOptions[0].value] }}</option>
-	</select>
-	<button ng-repeat="column in config.settings.columns" ng-click="hideShowColumn($index)">Hide/Show: {{ column.label }}</button>
+    <div class="small-9 columns">
+        <label>Search:</label><input ng-model="searchText" type="text" name="searchInput" ng-class="{active: isSearchTextActive}">
+        <select ng-model="searchDropdown"  ng-change="showDropdownResults()" ng-class="{active: isDropdownActive}">
+            <option value="">-- select --</option>
+            <option ng-repeat="item in config.data" value="{{ item[config.settings.filteringOptions[0].value] }}" >{{ item[config.settings.filteringOptions[0].value] }}</option>
+        </select>
+
+	<button ng-repeat="column in config.settings.columns" ng-click="hideShowColumn($index)" class="tiny button">Hide/Show: {{ column.label }}</button>
+    </div>
 </div>

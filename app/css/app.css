@@ -11,6 +11,7 @@ table {
   width: 50%;
   border-color: #ccc;
   border-collapse: collapse;
+  margin-left: 1em;
 }
 
 td, th {
@@ -31,7 +32,7 @@ td, th {
 }
 
 .activePage {
-  background-color: #0099FF;
+  background-color: #ffbf1a;
 }
 .highVisGreen {
   background-color: yellowgreen;

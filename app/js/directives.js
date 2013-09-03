@@ -54,18 +54,7 @@ angular.module('rdt.directives', [])
                     },
                     stopPagination : false,
                     paginate : function(rowItems, currentPageArr, itemsPerPage, currentRow, rowIndex) {
-//                        console.log('currentPageArr is: ' + JSON.stringify(currentPageArr));
-                        //console.log('TOTAL rowItems is: ' + JSON.stringify(rowItems));
-//                        console.log('$scope.pagination.currentPage is: ' + $scope.pagination.currentPage);
-//                        console.log('itemsPerPage is: ' + itemsPerPage);
-//                        console.log('current row is: ' + JSON.stringify(currentRow));
-//                        console.log('current row $$hashKey is: ' + JSON.stringify(currentRow.$$hashKey));
-//                        console.log('current row $index is: ' + rowIndex);
-
                         var currentPageRows = [];
-//                        if (!rowItems) {
-//                            return rowItems;
-//                        }
                         if (itemsPerPage && !$scope.pagination.stopPagination) {
                             for (var i=0; i < currentPageArr.length; i++ ) {
                                 currentPageRows.push(currentPageArr[i].$$hashKey);
@@ -104,23 +93,16 @@ angular.module('rdt.directives', [])
                 $scope.sorting = function(indexColumn) {
                     var dataSetObj = $scope.config.data,
                         sortingKey = $scope.config.settings.columns[indexColumn].key;
-
-                    console.log('SORTING KEY IS: ' + sortingKey);
-                    console.log('DATASETOBJ BEFORE SORTING IS: ' + dataSetObj);
                     dataSetObj.sort($scope.sortByKey(sortingKey,$scope.reverseOrder,function(a){return a}));
                     $scope.reverseOrder = !$scope.reverseOrder;
                     $scope.currentOrderByColumn = indexColumn;
-                    console.log('DATASETOBJ NOW IS: ' + dataSetObj);
                 };
                 $scope.showAllRows = function (){
                     if ($scope.searchText !== '') {
                         $scope.showRows = true;
-                        console.log('SEARCH TEXT IS NOT EMPTY');
                     } else {
                         $scope.showRows = false;
-                        console.log('SEARCH TEXT IS EMPTY');
                     }
-
                 };
                 $scope.showRows = function (){
                     $scope.showRows = true;
@@ -136,22 +118,15 @@ angular.module('rdt.directives', [])
                 $scope.$watch('searchText', function() {
 
                     if ($scope.searchText === '') {
-                        console.log('WATCHING SEARCHTEXT IS EMPTY');
                         $scope.isSearchTextActive = false;
                         $scope.pagination.stopPagination = false;
                     } else {
-                        console.log('WATCHING SEARCHTEXT IS NOT EMPTY');
                         $scope.isSearchTextActive = true;
                         $scope.pagination.stopPagination = true;
                     }
                     // display all rows
                     $scope.showAllRows();
                 });
-//                $scope.$watch('searchDropdown', function() {
-//                    console.log('WATCHING SEARCHDROPDOWN');
-//                    // display all rows
-//                     $scope.stopPagination = true;
-//                });
                 $scope.showDropdownResults = function() {
                     if ($scope.searchDropdown === '') {
                         console.log('searchDropdown empty');
