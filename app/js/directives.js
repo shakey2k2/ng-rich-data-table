@@ -60,7 +60,7 @@ angular.module('rdt.directives', [])
                                 currentPageRows.push(currentPageArr[i].$$hashKey);
                             }
                             // if the current row is not in this page array (-1) return true to hide
-                            if (angular.element.inArray(currentRow.$$hashKey, currentPageRows) === -1) {
+                            if ($.inArray(currentRow.$$hashKey, currentPageRows) === -1) {
                                 return true;
                             }
 
