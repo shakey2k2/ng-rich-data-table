@@ -52,30 +52,25 @@ angular.module('rdt.directives', [])
                         pageItems = $scope.config.data.slice($scope.pagination.currentPage * $scope.config.settings.paginationOptions.pageSize, ($scope.pagination.currentPage + 1) * ($scope.config.settings.paginationOptions.pageSize));
                         return pageItems;
                     },
+                    stopPagination : false,
                     paginate : function(rowItems, currentPageArr, itemsPerPage, currentRow, rowIndex) {
-                        console.log('currentPageArr is: ' + JSON.stringify(currentPageArr));
+//                        console.log('currentPageArr is: ' + JSON.stringify(currentPageArr));
                         //console.log('TOTAL rowItems is: ' + JSON.stringify(rowItems));
-                        console.log('$scope.pagination.currentPage is: ' + $scope.pagination.currentPage);
-                        console.log('itemsPerPage is: ' + itemsPerPage);
-                        console.log('current row is: ' + JSON.stringify(currentRow));
-                        console.log('current row $$hashKey is: ' + JSON.stringify(currentRow.$$hashKey));
-                        console.log('current row $index is: ' + rowIndex);
+//                        console.log('$scope.pagination.currentPage is: ' + $scope.pagination.currentPage);
+//                        console.log('itemsPerPage is: ' + itemsPerPage);
+//                        console.log('current row is: ' + JSON.stringify(currentRow));
+//                        console.log('current row $$hashKey is: ' + JSON.stringify(currentRow.$$hashKey));
+//                        console.log('current row $index is: ' + rowIndex);
 
                         var currentPageRows = [];
 //                        if (!rowItems) {
 //                            return rowItems;
 //                        }
-                        if (itemsPerPage) {
+                        if (itemsPerPage && !$scope.pagination.stopPagination) {
                             for (var i=0; i < currentPageArr.length; i++ ) {
                                 currentPageRows.push(currentPageArr[i].$$hashKey);
                             }
-                            //return currentPageArr;
-                            console.log('IN ARRAY: ' + angular.element.inArray(currentRow.$$hashKey, currentPageRows));
-                            console.log('COMPLETE IN ARRAY: ' + currentPageRows);
-                            // if the item is in the current page return false, if not return true
-                            // create a hashkey array ^^
                             // if the current row is not in this page array (-1) return true to hide
-                            // TODO pagination should display items grouped by index position, not by hashes
                             if (angular.element.inArray(currentRow.$$hashKey, currentPageRows) === -1) {
                                 return true;
                             }
@@ -85,11 +80,13 @@ angular.module('rdt.directives', [])
                         }
                     }
                 };
-
                 $scope.currentOrderByColumn = 0;
                 $scope.hiddenColumns = [];
                 $scope.reverseOrder = true;
                 $scope.showRows = false;
+                $scope.searchText = '';
+                $scope.isSearchTextActive = false;
+                $scope.isDropdownActive = false;
                 $scope.getValue = function( data, columnDef ) {
                     return data[columnDef.key];
                 };
@@ -125,6 +122,9 @@ angular.module('rdt.directives', [])
                     }
 
                 };
+                $scope.showRows = function (){
+                    $scope.showRows = true;
+                };
                 $scope.filterResults = function(elem) {
                     console.log('ELEM IS: ' + elem);
                     if(! $scope.searchText) {
@@ -134,10 +134,34 @@ angular.module('rdt.directives', [])
                     }
                 };
                 $scope.$watch('searchText', function() {
-                    console.log('WATCHING SEARCHTEXT');
+
+                    if ($scope.searchText === '') {
+                        console.log('WATCHING SEARCHTEXT IS EMPTY');
+                        $scope.isSearchTextActive = false;
+                        $scope.pagination.stopPagination = false;
+                    } else {
+                        console.log('WATCHING SEARCHTEXT IS NOT EMPTY');
+                        $scope.isSearchTextActive = true;
+                        $scope.pagination.stopPagination = true;
+                    }
                     // display all rows
                     $scope.showAllRows();
                 });
+//                $scope.$watch('searchDropdown', function() {
+//                    console.log('WATCHING SEARCHDROPDOWN');
+//                    // display all rows
+//                     $scope.stopPagination = true;
+//                });
+                $scope.showDropdownResults = function() {
+                    if ($scope.searchDropdown === '') {
+                        console.log('searchDropdown empty');
+                        $scope.isDropdownActive = false;
+                        $scope.pagination.stopPagination = false;
+                    } else {
+                        $scope.pagination.stopPagination = true;
+                        $scope.isDropdownActive = true;
+                    }
+                };
                 $scope.getColumnOrder = function(){
                     return $scope.config.settings.columns[$scope.currentOrderByColumn].key;
                 };

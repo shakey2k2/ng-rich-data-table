@@ -5,9 +5,6 @@
 angular.module('myApp.filters', [])
   .filter('paginationFilter', [function() {
     return function(rowItems, currentPageArr, itemsPerPage) {
-//        console.log('currentPageArr is: ' + JSON.stringify(currentPageArr));
-//        console.log('rowItem is: ' + JSON.stringify(rowItems));
-//        console.log('itemsPerPage is: ' + itemsPerPage);
         var currentPageRows = [];
         if (!rowItems) {
             return rowItems;

@@ -64,11 +64,6 @@ describe('directives', function() {
 
                     it('header titles should be in the correct order', function() {
                         var theadCols = rdtTable.find('thead tr th' );
-
-                        // TODO: Find a better solution for this then having to
-                        // put this inside of a jQuery object. There has to be an
-                        // angular way to do this
-                        // -> like using angular.element or you mean something else?
                         expect(angular.element(theadCols[0]).html()).toBe('Name');
                         expect(angular.element(theadCols[1]).html()).toBe('Age');
                     })

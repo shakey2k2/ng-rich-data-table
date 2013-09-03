@@ -26,6 +26,10 @@ td, th {
   background-color: #0066FF;
 }
 
+.active {
+   background-color: #ffd325;
+}
+
 .activePage {
   background-color: #0099FF;
 }
