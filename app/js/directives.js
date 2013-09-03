@@ -89,6 +89,7 @@ angular.module('rdt.directives', [])
                 $scope.currentOrderByColumn = 0;
                 $scope.hiddenColumns = [];
                 $scope.reverseOrder = true;
+                $scope.showRows = false;
                 $scope.getValue = function( data, columnDef ) {
                     return data[columnDef.key];
                 };
@@ -114,6 +115,16 @@ angular.module('rdt.directives', [])
                     $scope.currentOrderByColumn = indexColumn;
                     console.log('DATASETOBJ NOW IS: ' + dataSetObj);
                 };
+                $scope.showAllRows = function (){
+                    if ($scope.searchText !== '') {
+                        $scope.showRows = true;
+                        console.log('SEARCH TEXT IS NOT EMPTY');
+                    } else {
+                        $scope.showRows = false;
+                        console.log('SEARCH TEXT IS EMPTY');
+                    }
+
+                };
                 $scope.filterResults = function(elem) {
                     console.log('ELEM IS: ' + elem);
                     if(! $scope.searchText) {
@@ -122,6 +133,11 @@ angular.module('rdt.directives', [])
                         return elem.name.toLowerCase().indexOf( scope.searchText.toLowerCase()) == 0;
                     }
                 };
+                $scope.$watch('searchText', function() {
+                    console.log('WATCHING SEARCHTEXT');
+                    // display all rows
+                    $scope.showAllRows();
+                });
                 $scope.getColumnOrder = function(){
                     return $scope.config.settings.columns[$scope.currentOrderByColumn].key;
                 };
