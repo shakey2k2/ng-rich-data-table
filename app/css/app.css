@@ -12,6 +12,7 @@ table {
   border-color: #ccc;
   border-collapse: collapse;
   margin-left: 1em;
+  float: left;
 }
 
 td, th {
@@ -38,6 +39,11 @@ div.main {
 }
 .highVisGreen {
   background-color: yellowgreen;
+}
+
+.rdt-pagination {
+    float: left;
+    width: 500px;
 }
 
 .rdt-pagination ul li {
