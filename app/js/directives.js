@@ -108,7 +108,6 @@ angular.module('rdt.directives', [])
                     $scope.showRows = true;
                 };
                 $scope.filterResults = function(elem) {
-                    console.log('ELEM IS: ' + elem);
                     if(! $scope.searchText) {
                         return true;
                     } else {
@@ -116,7 +115,6 @@ angular.module('rdt.directives', [])
                     }
                 };
                 $scope.$watch('searchText', function() {
-
                     if ($scope.searchText === '') {
                         $scope.isSearchTextActive = false;
                         $scope.pagination.stopPagination = false;
@@ -129,7 +127,6 @@ angular.module('rdt.directives', [])
                 });
                 $scope.showDropdownResults = function() {
                     if ($scope.searchDropdown === '') {
-                        console.log('searchDropdown empty');
                         $scope.isDropdownActive = false;
                         $scope.pagination.stopPagination = false;
                     } else {
