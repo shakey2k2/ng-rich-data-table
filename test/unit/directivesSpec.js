@@ -17,7 +17,7 @@ describe('directives', function() {
     beforeEach(module('templates/rdtIcons.html'));
 
     describe('rdt-table', function() {
-        describe('make sure the table got rendered', function() {
+        describe('table should get rendered', function() {
             var sampleData = {
                 data : [
                         {name: "Moroni",  age: 50},
@@ -44,7 +44,7 @@ describe('directives', function() {
                     }
                 };
 
-            describe('test that the table is rendered correctly', function() {
+            describe('table compiles', function() {
                 var rdtTable;
 
                 beforeEach(inject(function($rootScope, $compile) {
@@ -115,36 +115,31 @@ describe('directives', function() {
 
                         // lowest age should be in the first row
                         tBodyRows = rdtTable.find('tbody tr' );
-                        ageFirstRow = angular.element(tBodyRows[0]).find('td')[1];
-                        ageLastRow = angular.element(tBodyRows[4]).find('td a')[1];
-                        console.log('ageLastRow is: ' + ageLastRow.innerHTML);
-                        // test first and last rows after clicking
-                        expect( parseInt(angular.element(ageFirstRow).html()) ).toBe(27);
-                        expect( parseInt(angular.element(ageLastRow).html()) ).toBe(50);
+                        ageFirstRow = angular.element(tBodyRows[0]).find('td a img')[1];
+                        ageLastRow = angular.element(tBodyRows[0+1]).find('td a img')[1];
+                        // test first and second row after clicking
+                        expect( parseInt(ageFirstRow.getAttribute('alt')) ).toBeLessThan( parseInt(ageLastRow.getAttribute('alt')));
 
                     })
 
-                    /*
-                    it('should reverse the order of rows by age after clicking again', function() {
-                        var theadC = rdtTable.find('thead tr th' ),
+                    it('should reverse order the rows by age after clicking', function() {
+                        var theadCols = rdtTable.find('thead tr th' ),
                             tBodyRows,
                             ageFirstRow,
                             ageLastRow;
-                        // click second column to order by age, first click
-                        angular.element(theadC[1]).click();
-                        // second click, reverse
-                        angular.element(theadC[1]).click();
+                        // click second column to order by age
+                        angular.element(theadCols[1]).click();
+                        angular.element(theadCols[1]).click();
 
-                        // highest age should be in the first row
-                        tBodyRows = rdtTable.find('tbody tr' ); 
-                        ageFirstRow = angular.element(tBodyRows[0]).find('td')[1];
-                        ageLastRow = angular.element(tBodyRows[4]).find('td')[1];
+                        // lowest age should be in the first row
+                        tBodyRows = rdtTable.find('tbody tr' );
+                        ageFirstRow = angular.element(tBodyRows[0]).find('td a img')[1];
+                        ageLastRow = angular.element(tBodyRows[0+1]).find('td a img')[1];
+                        // test first and second row after clicking two times
+                        expect( parseInt(ageLastRow.getAttribute('alt')) ).toBeLessThan( parseInt(ageFirstRow.getAttribute('alt')));
 
-                        // test first and last rows after clicking
-                        expect( parseInt(angular.element(ageFirstRow).html()) ).toBe(50);
-                        expect( parseInt(angular.element(ageLastRow).html()) ).toBe(27);
                     })
-                    */
+
                     it('should order the rows by name after clicking', function() {
                         var theadCols = rdtTable.find('thead tr th' ),
                             tBodyRows,
@@ -167,13 +162,11 @@ describe('directives', function() {
                     })
 
                     it('should hide the name column after clicking the hide name button', function() {
-                        
                         var tableButtons = rdtTable.find('button');
                         angular.element(tableButtons[0]).click();
                         var tableCells = rdtTable.find('tbody td');
                         // test if the display attribute of a name cell is 'none'
                         expect( angular.element(tableCells[0]).css('display') ).toBe('none');
-
                     })
 
                 });
@@ -186,41 +179,46 @@ describe('directives', function() {
                     })
                 });
 
-                describe('filters', function() {
-                    // TODO: complete filter tests
-                    it('should filter by name in search input', function() {
 
-                        // insert enos in search input
-                        var searchInput = rdtTable.find(':input');
-                        angular.element(searchInput[0]).val('enos');
 
-                        //input('searchInput').enter('enos');
-//                        console.log('input is:' +  angular.element(searchInput[0]) );
-//                        console.log('table is:' +  rdtTable.html());
-                        // check that other name cell is not visible
-                        // check if enos cell is visible
-                        expect(2).toBeGreaterThan(1); 
+                describe('should render the toolbar', function() {
+
+                    it('if display toolbar is set in config', function() {
+                        // check if toolbar was created
+                        if (sampleData.settings.useSearchInput) {
+                            var toolbar = angular.element(rdtTable.find('div')[0])[0];
+                            expect(angular.element(toolbar).attr('rdt-toolbar')).toBe('');
+                        }
                     })
                 });
 
-                describe('filters', function() {
+                describe('pagination', function() {
 
-                    it('should filter by name in select options', function() {
-                        // select enos in selector
-                        // check that other name cell is not visible
-                        // check that enos cell is visible
-                        expect(2).toBeGreaterThan(1);
+                    it('should display the correct number of visible rows according to defined page size', function() {
+                        var tBodyRows = rdtTable.find('tbody tr'),
+                            totalVisibleRows = 0;
+                        for (var i = 0; i < tBodyRows.length; i++) {
+                            if ( angular.element(tBodyRows[i]).css('display') !== ('none') ) {
+                                totalVisibleRows++;
+                            }
+                        }
+                        // check if visible rows are the same as the page size
+                        expect( parseInt(totalVisibleRows) ).toBe(sampleData.settings.paginationOptions.pageSize);
                     })
+
+                    it('should display a different page after clicking in the next page number button', function() {
+                        // get current displayed first row name and save
+                        var tBodyRows = rdtTable.find('tbody tr'),
+                            paginationButtons = rdtTable.find('div.rdt-pagination ul li a');
+                        // first row display is standard
+                        expect(angular.element(tBodyRows[0]).css('display')).toBe('');
+                        // click on 2nd page button
+                        angular.element(paginationButtons[2]).click();
+                        // first row display is none after clicking next page, so is not visible
+                        expect(angular.element(tBodyRows[0]).css('display')).toBe('none');
+                     })
                 });
 
-                describe('filters', function() {
-
-                    it('should display toolbar if is set in config', function() {
-                        // check if toolbar is visible
-                        expect(2).toBeGreaterThan(1);
-                    })
-                });
-                // extra filters: check if config values are used as filters
             });
 
         });
