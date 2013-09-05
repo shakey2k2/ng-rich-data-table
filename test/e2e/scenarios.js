@@ -2,118 +2,87 @@
 
 /* jasmine specs for directives go here */
 
-describe('directives', function() {
-    var $scope;
-/*
-    beforeEach(angular.module('rdt.directives'));
-    beforeEach(angular.module('templates/mainTable.html'));
-    beforeEach(angular.module('templates/header.html'));
-    beforeEach(angular.module('templates/rdtBody.html'));
-    beforeEach(angular.module('templates/rdtFooter.html'));
-    beforeEach(angular.module('templates/rdtToolbar.html'));
-*/
+describe('rich data table', function() {
 
         describe('make sure the table got rendered', function() {
             var sampleData = {
-                    data : [
-                        {name: "Moroni",  age: 50},
-                        {name: "Tiancum", age: 43},
-                        {name: "Jacob",   age: 27},
-                        {name: "Nephi",   age: 29},
-                        {name: "Enos",    age: 34}
+                data : [
+                    {name: "Moroni",  age: 50},
+                    {name: "Tiancum", age: 43},
+                    {name: "Jacob",   age: 27},
+                    {name: "Nephi",   age: 29},
+                    {name: "Enos",    age: 10}
+                    ,{"name":"Sheppard","age":68},{"name":"Rosella","age":13},{"name":"Tessa","age":87},{"name":"Emilia","age":25},{"name":"Vera","age":74},{"name":"Hallie","age":76},{"name":"Mullen","age":99},{"name":"Celeste","age":23},{"name":"Lorna","age":15},{"name":"Suzanne","age":75},{"name":"Lillie","age":34},{"name":"Crane","age":62},{"name":"Maryann","age":45},{"name":"Amalia","age":57},{"name":"Cooper","age":46},{"name":"Christine","age":70},{"name":"Ware","age":50},{"name":"Mary","age":87},{"name":"Dennis","age":31},{"name":"Kerri","age":81},{"name":"Ballard","age":27},{"name":"Bobbie","age":43},{"name":"Willis","age":73},{"name":"Larsen","age":69}
+                ],
+                settings: {
+                    columns : [
+                        { key: 'name', label: 'Name', columnClass:'highVisGreen' },
+                        { key: 'age',  label: 'Age', columnClass:'', customTmpl:'rdtActionButtons.html'  },
+                        { key: 'extracol',  label: 'ExtraColumn', columnClass:'', customTmpl:'rdtIcons.html'  }
                     ],
-                    settings: {
-                        columns : [
-                            { key: 'name', label: 'Name' },
-                            { key: 'age',  label: 'Age'  }
-                        ],
-                        useSearchInput: 1,  // display rdt toolbar
-                        filteringOptions: [
-                            {value: 'name', label: 'Name'}
-                        ]
+                    useSearchInput: true,  // display rdt toolbar
+                    filteringOptions: [
+                        {value: 'name', label: 'Name'}
+                    ],
+                    paginationOptions:{
+                        pageSize: 5,
+                        enablePagination: true
                     }
-                };
+                }
+            };
 
             describe('test that the table is rendered correctly', function() {
                 var rdtTable;
-/*
-                beforeEach(inject(function($rootScope, $compile) {
-                    // Setup scope with data
-                    $rootScope.config = sampleData;
 
-                    // Create the actual table element and compile it
-                    rdtTable = angular.element( '<table rdt-table config="config" cellpadding="0" cellspacing="0" border="1"></table>' );
-                    $compile(rdtTable)($rootScope);
 
-                    // Render it
-                    $rootScope.$digest();
-                }));
-*/
-/**************** tests  *****************/
+                /**************** tests  *****************/
                 describe('rich data table', function() {
 
                   beforeEach(function() {
                     browser().navigateTo('../../app/index.html');
+                    sleep(1);
                   });
 
+                    describe('index', function() {
 
-                  it('should automatically redirect to /view1 when location hash/fragment is empty', function() {
-                    expect(browser().location().url()).toBe("/index.html");
-                  });
+                        beforeEach(function() {
+                          browser().navigateTo('../../app/index.html');
+                        });
 
-                  describe('index', function() {
+                        it('should display names with "a" when typed in the search input"', function() {
+                            input('searchText').enter('a');
+                            expect(element('tbody').html()).toContain('Tiancum');
+                        });
 
-                    beforeEach(function() {
-                      browser().navigateTo('../../app/index.html');
+                        it('should display names with "b" when typed in the search input', function() {
+                          input('searchText').enter('b');
+                          expect(element('tbody').html()).toContain('Ballard');
+                        });
+
+                        it('should only display the name "sheppard" when typed in the search input', function() {
+                          input('searchText').enter('sheppard');
+                          expect(element('tbody').html()).toContain('Sheppard');
+                          expect(element('tbody').html()).not().toContain('Jacob');
+                        });
+
+                        it('should display a second page name when the 2nd pagination link is clicked', function() {
+                            element('div ul li:eq(2) a').click();
+                            expect(element('tbody').html()).toContain('Rosella');
+                        });
+
+                        it('should display "Suzanne" when selected in the dropdown filter', function() {
+                            input('searchDropdown').enter('Suzanne');
+                            sleep(1);
+                            expect(element('tbody').html()).toContain('Suzanne');
+                        });
+
                     });
-
-
-                    it('should render index when user navigates to /index', function() {
-                      expect(browser().location().url()).toBe("/");
-                    });
-                    
-                    it('should render input', function() {
-                      expect(element('[ng-model="searchText"]').html()).
-                        toMatch(/partial for view 1/);
-                       console.log('input: ' + element('[ng-model="searchText"]') ) ;
-                    }); 
-
-                  });
-
-                  describe('view1', function() {
-
-                    beforeEach(function() {
-                      browser().navigateTo('#/view1');
-                    });
-
-
-                    it('should render view1 when user navigates to /view1', function() {
-                      expect(element('[ng-view] p:first').text()).
-                        toMatch(/partial for view 1/);
-                    });
-
-                  });
-
-
-                  describe('view2', function() {
-
-                    beforeEach(function() {
-                      browser().navigateTo('#/view2');
-                    });
-
-
-                    it('should render view2 when user navigates to /view2', function() {
-                      expect(element('[ng-view] p:first').text()).
-                        toMatch(/partial for view 2/);
-                    });
-
-                  });
 
                 });
 
 
 
-/**************** tests *****************/
+                /**************** tests *****************/
             });
 
         });
