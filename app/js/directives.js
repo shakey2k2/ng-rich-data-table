@@ -8,9 +8,7 @@ angular.module('rdt.directives', [])
         return {
         	restrict:'A',
             // TODO change to isolate scope
-            // scope: {
-            //     config: "="
-            // },
+            scope: true,
             controller: function($scope,$http,$templateCache) {
                 /* NEW DATA STRUCTURE */
                 $scope.data = {};
@@ -38,7 +36,7 @@ angular.module('rdt.directives', [])
                         "pageSize": 5,
                         "enablePagination": true
                     },
-                    "hideHeader": false //This option will hide the header of the table. Can be done with an ng-hide on the thead. Should be false be default
+                    "hideHeader": false // Todo: This option will hide the header of the table. Can be done with an ng-hide on the thead. Should be false be default
                 };
 
                 //Predefined methods:
@@ -110,9 +108,14 @@ angular.module('rdt.directives', [])
                 $scope.searchText = '';
                 $scope.isSearchTextActive = false;
                 $scope.isDropdownActive = false;
-                // TODO: if displayValue(field, rowData) // Overrides getValue
                 $scope.getValue = function( data, columnDef ) {
-                    return data[columnDef.field];
+                    // if displayValue exists overrides getValue
+                    if(angular.isFunction($scope.displayValue)) {
+                        return displayValue(data, columnDef);
+                    }else {
+                        return data[columnDef.field];
+                    }
+
                 };
                 $scope.getValueFromRow = function(row, itemKey){
                     return row[itemKey];
