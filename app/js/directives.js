@@ -7,49 +7,83 @@ angular.module('rdt.directives', [])
     .directive('rdtTable', [ function($scope) {
         return {
         	restrict:'A',
+            // TODO change to isolate scope
             // scope: {
             //     config: "="
             // },
             controller: function($scope,$http,$templateCache) {
-                /*adding scope.config to feed the directive*/
-                $scope.config = {
-                    data : [
-                        {name: "Moroni",  age: 50},
-                        {name: "Tiancum", age: 43},
-                        {name: "Jacob",   age: 27},
-                        {name: "Nephi",   age: 29},
-                        {name: "Enos",    age: 10}
-                        ,{"name":"Sheppard","age":68},{"name":"Rosella","age":13},{"name":"Tessa","age":87},{"name":"Emilia","age":25},{"name":"Vera","age":74},{"name":"Hallie","age":76},{"name":"Mullen","age":99},{"name":"Celeste","age":23},{"name":"Lorna","age":15},{"name":"Suzanne","age":75},{"name":"Lillie","age":34},{"name":"Crane","age":62},{"name":"Maryann","age":45},{"name":"Amalia","age":57},{"name":"Cooper","age":46},{"name":"Christine","age":70},{"name":"Ware","age":50},{"name":"Mary","age":87},{"name":"Dennis","age":31},{"name":"Kerri","age":81},{"name":"Ballard","age":27},{"name":"Bobbie","age":43},{"name":"Willis","age":73},{"name":"Larsen","age":69}
-                    ],
-                    settings: {
-                        columns : [
-                            { key: 'name', label: 'Name', columnClass:'highVisGreen' },
-                            { key: 'age',  label: 'Age', columnClass:'', customTmpl:'rdtActionButtons.html'  },
-                            { key: 'extracol',  label: 'ExtraColumn', columnClass:'', customTmpl:'rdtIcons.html'  }
-                        ],
-                        useSearchInput: true,  // display rdt toolbar
-                        filteringOptions: [
-                            {value: 'name', label: 'Name'}
-                        ],
-                        paginationOptions:{
-                            pageSize: 5,
-                            enablePagination: true
+                /* NEW DATA STRUCTURE */
+                $scope.data = {};
+                $scope.data.results = [
+                    {name: "Moroni",  age: 50},
+                    {name: "Tiancum", age: 43},
+                    {name: "Jacob",   age: 27},
+                    {name: "Nephi",   age: 29},
+                    {name: "Enos",    age: 10}
+                    ,{"name":"Sheppard","age":68},{"name":"Rosella","age":13},{"name":"Tessa","age":87},{"name":"Emilia","age":25},{"name":"Vera","age":74},{"name":"Hallie","age":76},{"name":"Mullen","age":99},{"name":"Celeste","age":23},{"name":"Lorna","age":15},{"name":"Suzanne","age":75},{"name":"Lillie","age":34},{"name":"Crane","age":62},{"name":"Maryann","age":45},{"name":"Amalia","age":57},{"name":"Cooper","age":46},{"name":"Christine","age":70},{"name":"Ware","age":50},{"name":"Mary","age":87},{"name":"Dennis","age":31},{"name":"Kerri","age":81},{"name":"Ballard","age":27},{"name":"Bobbie","age":43},{"name":"Willis","age":73},{"name":"Larsen","age":69}
+                ];
+                $scope.settings = {
+                    "columnDefs" : [
+                        {
+                            "field": "name",
+                            "displayLabel":"Name",
+                            "class": "highVisGreen"
                         }
-                    }
+                    ],
+                    "useSearchInput": true,
+                    "filterOptions": [
+                        { "value": "name", "displayLabel":"Name" }
+                    ],
+                    "paginationOptions": {
+                        "pageSize": 5,
+                        "enablePagination": true
+                    },
+                    "hideHeader": false //This option will hide the header of the table. Can be done with an ng-hide on the thead. Should be false be default
                 };
+
+                //Predefined methods:
+//                    displayValue(field, rowData) // Overrides getValue
+                /* NEW DATA STRUCTURE */
+
+                /*adding scope.config to feed the directive*/
+//                $scope.config = {
+//                    data : [
+//                        {name: "Moroni",  age: 50},
+//                        {name: "Tiancum", age: 43},
+//                        {name: "Jacob",   age: 27},
+//                        {name: "Nephi",   age: 29},
+//                        {name: "Enos",    age: 10}
+//                        //,{"name":"Sheppard","age":68},{"name":"Rosella","age":13},{"name":"Tessa","age":87},{"name":"Emilia","age":25},{"name":"Vera","age":74},{"name":"Hallie","age":76},{"name":"Mullen","age":99},{"name":"Celeste","age":23},{"name":"Lorna","age":15},{"name":"Suzanne","age":75},{"name":"Lillie","age":34},{"name":"Crane","age":62},{"name":"Maryann","age":45},{"name":"Amalia","age":57},{"name":"Cooper","age":46},{"name":"Christine","age":70},{"name":"Ware","age":50},{"name":"Mary","age":87},{"name":"Dennis","age":31},{"name":"Kerri","age":81},{"name":"Ballard","age":27},{"name":"Bobbie","age":43},{"name":"Willis","age":73},{"name":"Larsen","age":69}
+//                    ],
+//                    settings: {
+//                        columns : [
+//                            { key: 'name', label: 'Name', columnClass:'highVisGreen' },
+//                            { key: 'age',  label: 'Age', columnClass:'', customTmpl:'rdtActionButtons.html'  },
+//                            { key: 'extracol',  label: 'ExtraColumn', columnClass:'', customTmpl:'rdtIcons.html'  }
+//                        ],
+//                        useSearchInput: true,  // display rdt toolbar
+//                        filteringOptions: [
+//                            {value: 'name', label: 'Name'}
+//                        ],
+//                        paginationOptions:{
+//                            pageSize: 5,
+//                            enablePagination: true
+//                        }
+//                    }
+//                };
                 // pagination
                 $scope.pagination = {
                     currentPage : 0,
                     totalPages : function() {
                         // create total pages number array to use in rdtPagination directive ng-repeat
-                        return new Array( Math.ceil($scope.config.data.length / $scope.config.settings.paginationOptions.pageSize) );
+                        return new Array( Math.ceil($scope.data.results.length / $scope.settings.paginationOptions.pageSize) );
                     },
                     goToPage : function(pageNumber) {
                         $scope.pagination.currentPage = pageNumber;
                     },
                     getCurrentPageItems : function() {
                         var pageItems = [];
-                        pageItems = $scope.config.data.slice($scope.pagination.currentPage * $scope.config.settings.paginationOptions.pageSize, ($scope.pagination.currentPage + 1) * ($scope.config.settings.paginationOptions.pageSize));
+                        pageItems = $scope.data.results.slice($scope.pagination.currentPage * $scope.settings.paginationOptions.pageSize, ($scope.pagination.currentPage + 1) * ($scope.settings.paginationOptions.pageSize));
                         return pageItems;
                     },
                     stopPagination : false,
@@ -76,8 +110,9 @@ angular.module('rdt.directives', [])
                 $scope.searchText = '';
                 $scope.isSearchTextActive = false;
                 $scope.isDropdownActive = false;
+                // TODO: if displayValue(field, rowData) // Overrides getValue
                 $scope.getValue = function( data, columnDef ) {
-                    return data[columnDef.key];
+                    return data[columnDef.field];
                 };
                 $scope.getValueFromRow = function(row, itemKey){
                     return row[itemKey];
@@ -91,8 +126,8 @@ angular.module('rdt.directives', [])
                     }
                 };
                 $scope.sorting = function(indexColumn) {
-                    var dataSetObj = $scope.config.data,
-                        sortingKey = $scope.config.settings.columns[indexColumn].key;
+                    var dataSetObj = $scope.data.results,
+                        sortingKey = $scope.settings.columnDefs[indexColumn].field;
                     dataSetObj.sort($scope.sortByKey(sortingKey,$scope.reverseOrder,function(a){return a}));
                     $scope.reverseOrder = !$scope.reverseOrder;
                     $scope.currentOrderByColumn = indexColumn;
@@ -135,7 +170,7 @@ angular.module('rdt.directives', [])
                     }
                 };
                 $scope.getColumnOrder = function(){
-                    return $scope.config.settings.columns[$scope.currentOrderByColumn].key;
+                    return $scope.settings.columnDefs[$scope.currentOrderByColumn].field;
                 };
                 $scope.orderIsActive = function($index) {
                     if($index === $scope.currentOrderByColumn) {
@@ -166,7 +201,7 @@ angular.module('rdt.directives', [])
                 $scope.getCustomColClass = function(columnIndex) {
                    // get column class from config according to column index
                    if (columnIndex !== undefined){
-                        return $scope.config.settings.columns[columnIndex].columnClass;
+                        return $scope.settings.columnDefs[columnIndex].class;
                    }
                 };
                 // template storage object for these directives
@@ -226,6 +261,7 @@ angular.module('rdt.directives', [])
             var contentTmpl = '';
 
             // check if there is a corresponding template in column definition
+           // TODO replace with angular functions
             if (typeof columnTmplDefinition !== 'undefined') {
                 contentTmpl = columnTmplDefinition;
                 //contentTmpl = $templateCache.get(columnTmplDefinition);
@@ -237,9 +273,11 @@ angular.module('rdt.directives', [])
 
         var linker = function(scope, element, attrs) {
             columnIndex = scope.$index;
-            columnTmplDefinition = scope.config.settings.columns[columnIndex].customTmpl;
+            // TODO: replace customTmpl
+            columnTmplDefinition = scope.settings.columnDefs[columnIndex].customTmpl;
             var tmplBaseDir = 'templates/';
             // check column defs
+            // TODO replace with angular functions
             if (typeof columnTmplDefinition !== 'undefined') {
                 // needs a template according to column definition so checks if that template was set before in templateMap
                 if (typeof templateMap[columnTmplDefinition] !== "undefined") {

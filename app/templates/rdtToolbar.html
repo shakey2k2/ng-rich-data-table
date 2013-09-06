@@ -3,9 +3,9 @@
         <label>Search:</label><input ng-model="searchText" type="text" name="searchInput" ng-class="{active: isSearchTextActive}">
         <select ng-model="searchDropdown"  ng-change="showDropdownResults()" ng-class="{active: isDropdownActive}">
             <option value="">-- select --</option>
-            <option ng-repeat="item in config.data" value="{{ item[config.settings.filteringOptions[0].value] }}" >{{ item[config.settings.filteringOptions[0].value] }}</option>
+            <option ng-repeat="item in data.results" value="{{ item[settings.filterOptions[0].value] }}" >{{ item[settings.filterOptions[0].value] }}</option>
         </select>
 
-	<button ng-repeat="column in config.settings.columns" ng-click="hideShowColumn($index)" class="tiny button">Hide/Show: {{ column.label }}</button>
+	<button ng-repeat="column in settings.columnDefs" ng-click="hideShowColumn($index)" class="tiny button">Hide/Show: {{ column.displayLabel }}</button>
     </div>
 </div>

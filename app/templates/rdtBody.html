@@ -1,5 +1,5 @@
-<tr ng-repeat="row in config.data | filter:searchText | filter:searchDropdown" ng-hide="pagination.paginate(config.data,pagination.getCurrentPageItems(),config.settings.paginationOptions.pageSize, row, $index)">
-    <td rdt-td-content ng-repeat="column in config.settings.columns" ng-class="getCustomColClass($index,column)" ng-hide="isHidden($index)">
+<tr ng-repeat="row in data.results | filter:searchText | filter:searchDropdown" ng-hide="pagination.paginate(data.results,pagination.getCurrentPageItems(),settings.paginationOptions.pageSize, row, $index)">
+    <td rdt-td-content ng-repeat="column in settings.columnDefs" ng-class="getCustomColClass($index,column)" ng-hide="isHidden($index)">
         <!--<div>{{ getValue(row, column) }}</div>-->
     </td>
 </tr>
