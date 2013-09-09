@@ -4,215 +4,25 @@
 
 
 angular.module('rdt.directives', [])
-    .directive('rdtTable', [ function($scope) {
+    .directive('rdtTable', ['$templateCache','$http', '$q', function($templateCache, $http, $q ) {
         return {
         	restrict:'A',
             // TODO change to isolate scope
             scope: true,
-            controller: function($scope,$http,$templateCache) {
-                /* NEW DATA STRUCTURE */
-                $scope.data = {};
-                $scope.data.results = [
-                    {name: "Moroni",  age: 50},
-                    {name: "Tiancum", age: 43},
-                    {name: "Jacob",   age: 27},
-                    {name: "Nephi",   age: 29},
-                    {name: "Enos",    age: 10}
-                    ,{"name":"Sheppard","age":68},{"name":"Rosella","age":13},{"name":"Tessa","age":87},{"name":"Emilia","age":25},{"name":"Vera","age":74},{"name":"Hallie","age":76},{"name":"Mullen","age":99},{"name":"Celeste","age":23},{"name":"Lorna","age":15},{"name":"Suzanne","age":75},{"name":"Lillie","age":34},{"name":"Crane","age":62},{"name":"Maryann","age":45},{"name":"Amalia","age":57},{"name":"Cooper","age":46},{"name":"Christine","age":70},{"name":"Ware","age":50},{"name":"Mary","age":87},{"name":"Dennis","age":31},{"name":"Kerri","age":81},{"name":"Ballard","age":27},{"name":"Bobbie","age":43},{"name":"Willis","age":73},{"name":"Larsen","age":69}
-                ];
-                $scope.settings = {
-                    "columnDefs" : [
-                        {
-                            "field": "name",
-                            "displayLabel":"Name",
-                            "class": "highVisGreen"
-                        }
-                    ],
-                    "useSearchInput": true,
-                    "filterOptions": [
-                        { "value": "name", "displayLabel":"Name" }
-                    ],
-                    "paginationOptions": {
-                        "pageSize": 5,
-                        "enablePagination": true
-                    },
-                    "hideHeader": false // Todo: This option will hide the header of the table. Can be done with an ng-hide on the thead. Should be false be default
-                };
+            templateUrl:'templates/mainTable.html',
+            compile: function() {
+                return {
+                    pre: function($scope, iElement, iAttrs) {
+                        var $element = $(iElement);
+                        var options = {};
+                        var table = new richDataTable($scope, options, $templateCache, $http, $q);
+                        return table.init().then(function() {
 
-                //Predefined methods:
-//                    displayValue(field, rowData) // Overrides getValue
-                /* NEW DATA STRUCTURE */
-
-                /*adding scope.config to feed the directive*/
-//                $scope.config = {
-//                    data : [
-//                        {name: "Moroni",  age: 50},
-//                        {name: "Tiancum", age: 43},
-//                        {name: "Jacob",   age: 27},
-//                        {name: "Nephi",   age: 29},
-//                        {name: "Enos",    age: 10}
-//                        //,{"name":"Sheppard","age":68},{"name":"Rosella","age":13},{"name":"Tessa","age":87},{"name":"Emilia","age":25},{"name":"Vera","age":74},{"name":"Hallie","age":76},{"name":"Mullen","age":99},{"name":"Celeste","age":23},{"name":"Lorna","age":15},{"name":"Suzanne","age":75},{"name":"Lillie","age":34},{"name":"Crane","age":62},{"name":"Maryann","age":45},{"name":"Amalia","age":57},{"name":"Cooper","age":46},{"name":"Christine","age":70},{"name":"Ware","age":50},{"name":"Mary","age":87},{"name":"Dennis","age":31},{"name":"Kerri","age":81},{"name":"Ballard","age":27},{"name":"Bobbie","age":43},{"name":"Willis","age":73},{"name":"Larsen","age":69}
-//                    ],
-//                    settings: {
-//                        columns : [
-//                            { key: 'name', label: 'Name', columnClass:'highVisGreen' },
-//                            { key: 'age',  label: 'Age', columnClass:'', customTmpl:'rdtActionButtons.html'  },
-//                            { key: 'extracol',  label: 'ExtraColumn', columnClass:'', customTmpl:'rdtIcons.html'  }
-//                        ],
-//                        useSearchInput: true,  // display rdt toolbar
-//                        filteringOptions: [
-//                            {value: 'name', label: 'Name'}
-//                        ],
-//                        paginationOptions:{
-//                            pageSize: 5,
-//                            enablePagination: true
-//                        }
-//                    }
-//                };
-                // pagination
-                $scope.pagination = {
-                    currentPage : 0,
-                    totalPages : function() {
-                        // create total pages number array to use in rdtPagination directive ng-repeat
-                        return new Array( Math.ceil($scope.data.results.length / $scope.settings.paginationOptions.pageSize) );
-                    },
-                    goToPage : function(pageNumber) {
-                        $scope.pagination.currentPage = pageNumber;
-                    },
-                    getCurrentPageItems : function() {
-                        var pageItems = [];
-                        pageItems = $scope.data.results.slice($scope.pagination.currentPage * $scope.settings.paginationOptions.pageSize, ($scope.pagination.currentPage + 1) * ($scope.settings.paginationOptions.pageSize));
-                        return pageItems;
-                    },
-                    stopPagination : false,
-                    paginate : function(rowItems, currentPageArr, itemsPerPage, currentRow, rowIndex) {
-                        var currentPageRows = [];
-                        if (itemsPerPage && !$scope.pagination.stopPagination) {
-                            for (var i=0; i < currentPageArr.length; i++ ) {
-                                currentPageRows.push(currentPageArr[i].$$hashKey);
-                            }
-                            // if the current row is not in this page array (-1) return true to hide
-                            if ($.inArray(currentRow.$$hashKey, currentPageRows) === -1) {
-                                return true;
-                            }
-
-                        } else {  // this condition is set when there is no itemsPerPage parameter set up, so it will return the whole model
-                            return false;
-                        }
+                            return null;
+                        });
                     }
-                };
-                $scope.currentOrderByColumn = 0;
-                $scope.hiddenColumns = [];
-                $scope.reverseOrder = true;
-                $scope.showRows = false;
-                $scope.searchText = '';
-                $scope.isSearchTextActive = false;
-                $scope.isDropdownActive = false;
-                $scope.getValue = function( data, columnDef ) {
-                    // if displayValue exists overrides getValue
-                    if(angular.isFunction($scope.displayValue)) {
-                        return displayValue(data, columnDef);
-                    }else {
-                        return data[columnDef.field];
-                    }
-
-                };
-                $scope.getValueFromRow = function(row, itemKey){
-                    return row[itemKey];
-                };
-                $scope.sortByKey = function(field, reverse, primer){
-                    var key = function (x) {return primer ? primer(x[field]) : x[field]};
-
-                    return function (a,b) {
-                        var A = key(a), B = key(b);
-                        return ( (A < B) ? -1 : ((A > B) ? 1 : 0) ) * [-1,1][+!!reverse];
-                    }
-                };
-                $scope.sorting = function(indexColumn) {
-                    var dataSetObj = $scope.data.results,
-                        sortingKey = $scope.settings.columnDefs[indexColumn].field;
-                    dataSetObj.sort($scope.sortByKey(sortingKey,$scope.reverseOrder,function(a){return a}));
-                    $scope.reverseOrder = !$scope.reverseOrder;
-                    $scope.currentOrderByColumn = indexColumn;
-                };
-                $scope.showAllRows = function (){
-                    if ($scope.searchText !== '') {
-                        $scope.showRows = true;
-                    } else {
-                        $scope.showRows = false;
-                    }
-                };
-                $scope.showRows = function (){
-                    $scope.showRows = true;
-                };
-                $scope.filterResults = function(elem) {
-                    if(! $scope.searchText) {
-                        return true;
-                    } else {
-                        return elem.name.toLowerCase().indexOf( scope.searchText.toLowerCase()) == 0;
-                    }
-                };
-                $scope.$watch('searchText', function() {
-                    if ($scope.searchText === '') {
-                        $scope.isSearchTextActive = false;
-                        $scope.pagination.stopPagination = false;
-                    } else {
-                        $scope.isSearchTextActive = true;
-                        $scope.pagination.stopPagination = true;
-                    }
-                    // display all rows
-                    $scope.showAllRows();
-                });
-                $scope.showDropdownResults = function() {
-                    if ($scope.searchDropdown === '') {
-                        $scope.isDropdownActive = false;
-                        $scope.pagination.stopPagination = false;
-                    } else {
-                        $scope.pagination.stopPagination = true;
-                        $scope.isDropdownActive = true;
-                    }
-                };
-                $scope.getColumnOrder = function(){
-                    return $scope.settings.columnDefs[$scope.currentOrderByColumn].field;
-                };
-                $scope.orderIsActive = function($index) {
-                    if($index === $scope.currentOrderByColumn) {
-                        if($scope.reverseOrder){
-                           return 'order-active-reverse';
-                        }else {
-                           return 'order-active'; 
-                        }
-                    }
-                };
-                $scope.hideShowColumn = function(columnIndex) {
-                    var hideArray, tempHidden = 0;
-                    // check if the column is hidden. if it is remove from array of hidden columns, if not hidden add it to the array
-                    tempHidden = $scope.hiddenColumns.indexOf(columnIndex);
-                    if ( tempHidden !== -1 ) {
-                        $scope.hiddenColumns.splice(tempHidden, 1);
-                    }else {
-                        $scope.hiddenColumns.push(columnIndex);
-                    }
-                };
-                $scope.isHidden = function(columnIndex) {
-                    if ( $scope.hiddenColumns.indexOf(columnIndex) !== -1 ) {
-                        return true
-                    }else {
-                        return false;
-                    }
-                };
-                $scope.getCustomColClass = function(columnIndex) {
-                   // get column class from config according to column index
-                   if (columnIndex !== undefined){
-                        return $scope.settings.columnDefs[columnIndex].class;
-                   }
-                };
-                // template storage object for these directives
-                $scope.currentTemplates = {
-                   default: ''
-                };
+                }
             },
-        	templateUrl:'templates/mainTable.html',
         	replace: false
         };
     }])
