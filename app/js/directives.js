@@ -4,20 +4,23 @@
 
 
 angular.module('rdt.directives', [])
-    .directive('rdtTable', ['$templateCache','$http', '$q', function($templateCache, $http, $q ) {
+    .directive('rdtTable', ['$compile','$templateCache','$http', '$q','Items', function($compile, $templateCache, $http, $q, Items ) {
         return {
         	restrict:'A',
             // TODO change to isolate scope
             scope: true,
-            templateUrl:'templates/mainTable.html',
+            //templateUrl:'templates/mainTable.html',
             compile: function() {
                 return {
                     pre: function($scope, iElement, iAttrs) {
                         var $element = $(iElement);
                         var options = {};
-                        var table = new richDataTable($scope, options, $templateCache, $http, $q);
+                        var table = new richDataTable($scope, options, $templateCache, $http, $q, Items);
                         return table.init().then(function() {
-
+//                            console.log('iElement: ' + iElement[0] );
+//                            console.log('template: ' + $templateCache.get('templates/mainTable.html') );
+//                            console.log('scope in directive/compile: ' + JSON.stringify($scope.data.results));
+                            iElement.append($compile($templateCache.get('templates/mainTable.html'))($scope));
                             return null;
                         });
                     }
@@ -26,38 +29,73 @@ angular.module('rdt.directives', [])
         	replace: false
         };
     }])
-    .directive('rdtHeader', [ function() {
+    .directive('rdtHeader', ['$compile','$templateCache', function($compile, $templateCache) {
         return {
         	restrict:'A',
-        	templateUrl:'templates/header.html',
+            compile: function() {
+                return {
+                    pre: function($scope, iElement, iAttrs) {
+                        iElement.append($compile($templateCache.get('templates/header.html'))($scope));
+                        return  null;
+                    }
+                }
+            },
         	replace: false
         };
     }])
-    .directive('rdtBody', [ function() {
+    .directive('rdtBody', ['$compile','$templateCache', function($compile, $templateCache) {
         return {
         	restrict:'A',
-        	templateUrl:'templates/rdtBody.html',
+            compile: function() {
+                return {
+                    pre: function($scope, iElement, iAttrs) {
+                        iElement.append($compile($templateCache.get('templates/rdtBody.html'))($scope));
+                        return  null;
+                    }
+                }
+            },
         	replace: false
         };
     }])
-    .directive('rdtFooter', [ function() {
+    .directive('rdtFooter', ['$compile','$templateCache', function($compile, $templateCache) {
         return {
             restrict:'A',
-            templateUrl:'templates/rdtFooter.html',
+            compile: function() {
+                return {
+                    pre: function($scope, iElement, iAttrs) {
+                        iElement.append($compile($templateCache.get('templates/rdtFooter.html'))($scope));
+                        return  null;
+                    }
+                }
+            },
             replace: false
         };
     }])
-    .directive('rdtToolbar', [ function() {
+    .directive('rdtToolbar', ['$compile','$templateCache', function($compile, $templateCache) {
         return {
             restrict:'A',
-            templateUrl:'templates/rdtToolbar.html',
+            compile: function() {
+                return {
+                    pre: function($scope, iElement, iAttrs) {
+                        iElement.append($compile($templateCache.get('templates/rdtToolbar.html'))($scope));
+                        return  null;
+                    }
+                }
+            },
             replace: false
         };
     }])
-    .directive('rdtPagination', [ function() {
+    .directive('rdtPagination', ['$compile','$templateCache', function($compile, $templateCache) {
         return {
         	restrict:'A',
-        	templateUrl:'templates/rdtPagination.html',
+            compile: function() {
+                return {
+                    pre: function($scope, iElement, iAttrs) {
+                        iElement.append($compile($templateCache.get('templates/rdtPagination.html'))($scope));
+                        return  null;
+                    }
+                }
+            },
         	replace: false
         };
     }])
@@ -77,7 +115,6 @@ angular.module('rdt.directives', [])
            // TODO replace with angular functions
             if (typeof columnTmplDefinition !== 'undefined') {
                 contentTmpl = columnTmplDefinition;
-                //contentTmpl = $templateCache.get(columnTmplDefinition);
             }else {
                 contentTmpl = simpleDataTmpl;
             }

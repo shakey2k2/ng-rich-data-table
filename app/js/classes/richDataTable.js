@@ -1,17 +1,38 @@
 /**
  * Rich Data Table Class
  */
-var richDataTable = function ($scope, options, $templateCache, $http, $q) {
+var richDataTable = function ($scope, options, $templateCache, $http, $q, Items) {
     var defaults = {
-        data: [],
-        "columnDefs" : [],
-        "useSearchInput": false,
-        "filterOptions": undefined,
+        "columnDefs" : [
+            {
+                "field": "name",
+                "displayLabel":"Name",
+                "class": "highVisGreen"
+            },
+           {
+                "field": "age",
+                "displayLabel":"Age",
+                "class": ""
+            }
+        ],
+        "useSearchInput": true,
+        "filterOptions": [
+            { "value": "name", "displayLabel":"Name" }
+        ],
         "paginationOptions": {
-            "pageSize": 1,
-            "enablePagination": false
+            "pageSize": 5,
+            "enablePagination": true
         },
-        "hideHeader": false // Todo: This option will hide the header of the table. Can be done with an ng-hide on the thead. Should be false be default
+        "hideHeader": false,
+        // default templates
+        mainTable: "mainTable",
+        rdtBody: "rdtBody",
+        rdtFooter: "rdtFooter",
+        header: "header",
+        rdtTdContent: "rdtTdContent",
+        rdtPagination: "rdtPagination",
+        rdtToolbar: "rdtToolbar",
+        rdtIcons: "rdtIcons"
     },
     self = this;
 
@@ -25,7 +46,6 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q) {
     // get templates
     self.initTemplates = function() {
         var templates = ['mainTable', 'rdtBody','rdtFooter','header','rdtTdContent','rdtPagination','rdtToolbar','rdtIcons'];
-
         var promises = [];
         angular.forEach(templates, function(template) {
             promises.push( self.getTemplate(template) );
@@ -36,12 +56,13 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q) {
 
     self.getTemplate = function (key) {
         var t = self.config[key];
+        console.log('self.config[key]: ' + self.config[key]);
         var tmplBaseDir = 'templates/';
         var uKey = tmplBaseDir + key + ".html";
         var p = $q.defer();
 
-        if (t && !TEMPLATE_REGEXP.test(t)) {
-            $http.get(t, {
+        if (t) {
+            $http.get(uKey, {
                 cache: $templateCache
             })
                 .success(function(data){
@@ -64,32 +85,11 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q) {
     };
 
 
-self.init = function() {
-    return self.initTemplates().then(function(){
-        console.log('self.initTemplates().then');
-        console.log('scope: ' + self.settings.paginationOptions.pageSize);
-        console.log($templateCache.get('templates/mainTable.html'));
-    });
-};
-
-
-    self.settings = {
-        "columnDefs" : [
-            {
-                "field": "name",
-                "displayLabel":"Name",
-                "class": "highVisGreen"
-            }
-        ],
-        "useSearchInput": true,
-        "filterOptions": [
-            { "value": "name", "displayLabel":"Name" }
-        ],
-        "paginationOptions": {
-            "pageSize": 5,
-            "enablePagination": true
-        },
-        "hideHeader": false // Todo: This option will hide the header of the table. Can be done with an ng-hide on the thead. Should be false be default
+    self.init = function() {
+        return self.initTemplates().then(function(){
+            defaults.data = Items.query();
+            $scope.data = defaults.data;
+        });
     };
 
     // pagination
@@ -100,11 +100,11 @@ self.init = function() {
             return new Array( Math.ceil($scope.data.results.length / $scope.settings.paginationOptions.pageSize) );
         },
         goToPage : function(pageNumber) {
-            self.pagination.currentPage = pageNumber;
+            $scope.pagination.currentPage = pageNumber;
         },
         getCurrentPageItems : function() {
             var pageItems = [];
-            pageItems = $scope.data.results.slice(self.pagination.currentPage * $scope.settings.paginationOptions.pageSize, (self.pagination.currentPage + 1) * (self.settings.paginationOptions.pageSize));
+            pageItems = $scope.data.results.slice($scope.pagination.currentPage * $scope.settings.paginationOptions.pageSize, ($scope.pagination.currentPage + 1) * ($scope.settings.paginationOptions.pageSize));
             return pageItems;
         },
         stopPagination : false,
@@ -153,11 +153,11 @@ self.init = function() {
         }
     };
     self.sorting = function(indexColumn) {
-        var dataSetObj = self.data.results,
-            sortingKey = self.settings.columnDefs[indexColumn].field;
-        dataSetObj.sort(self.sortByKey(sortingKey,self.reverseOrder,function(a){return a}));
-        self.reverseOrder = !self.reverseOrder;
-        self.currentOrderByColumn = indexColumn;
+        var dataSetObj = $scope.data.results,
+            sortingKey = $scope.settings.columnDefs[indexColumn].field;
+        dataSetObj.sort(self.sortByKey(sortingKey,$scope.reverseOrder,function(a){return a}));
+        $scope.reverseOrder = !$scope.reverseOrder;
+        $scope.currentOrderByColumn = indexColumn;
     };
     self.showAllRows = function (){
         if (self.searchText !== '') {
@@ -200,8 +200,8 @@ self.init = function() {
         return self.settings.columnDefs[self.currentOrderByColumn].field;
     };
     self.orderIsActive = function($index) {
-        if($index === self.currentOrderByColumn) {
-            if(self.reverseOrder){
+        if($index === $scope.currentOrderByColumn) {
+            if($scope.reverseOrder){
                 return 'order-active-reverse';
             }else {
                 return 'order-active';
@@ -211,15 +211,15 @@ self.init = function() {
     self.hideShowColumn = function(columnIndex) {
         var hideArray, tempHidden = 0;
         // check if the column is hidden. if it is remove from array of hidden columns, if not hidden add it to the array
-        tempHidden = self.hiddenColumns.indexOf(columnIndex);
+        tempHidden = $scope.hiddenColumns.indexOf(columnIndex);
         if ( tempHidden !== -1 ) {
-            self.hiddenColumns.splice(tempHidden, 1);
+            $scope.hiddenColumns.splice(tempHidden, 1);
         }else {
-            self.hiddenColumns.push(columnIndex);
+            $scope.hiddenColumns.push(columnIndex);
         }
     };
     self.isHidden = function(columnIndex) {
-        if ( self.hiddenColumns.indexOf(columnIndex) !== -1 ) {
+        if ( $scope.hiddenColumns.indexOf(columnIndex) !== -1 ) {
             return true
         }else {
             return false;
@@ -236,5 +236,25 @@ self.init = function() {
     self.currentTemplates = {
         default: ''
     };
+    self.compileTemplate = function(scope, iElement, iAttrs, templateName) {
+        iElement.append($compile($templateCache.get(templateName))(scope));
+        return  null;
+    };
 
+    //$scope vars
+    $scope.settings = self.config;
+    $scope.getValue = self.getValue;
+    $scope.currentOrderByColumn = self.currentOrderByColumn;
+    $scope.hiddenColumns = self.hiddenColumns;
+    $scope.reverseOrder = self.reverseOrder;
+    $scope.sorting = self.sorting;
+    $scope.orderIsActive = self.orderIsActive;
+    $scope.showRows = self.showRows;
+    $scope.searchText = self.searchText;
+    $scope.isSearchTextActive = self.isSearchTextActive;
+    $scope.isDropdownActive = self.isDropdownActive;
+    $scope.compileTemplate = self.compileTemplate;
+    $scope.hideShowColumn = self.hideShowColumn;
+    $scope.isHidden = self.isHidden;
+    $scope.pagination = self.pagination;
 };
