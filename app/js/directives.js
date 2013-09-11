@@ -4,24 +4,27 @@
 
 
 angular.module('rdt.directives', [])
-    .directive('rdtTable', ['$compile','$templateCache','$http', '$q','Items', function($compile, $templateCache, $http, $q, Items ) {
+    .directive('rdtTable', ['$compile','$templateCache','$http', '$q','Items', 'RDTSettings', function($compile, $templateCache, $http, $q, Items, RDTSettings ) {
         return {
         	restrict:'A',
             // TODO change to isolate scope
             scope: true,
-            //templateUrl:'templates/mainTable.html',
             compile: function() {
                 return {
                     pre: function($scope, iElement, iAttrs) {
                         var $element = $(iElement);
-                        var options = {};
-                        var table = new richDataTable($scope, options, $templateCache, $http, $q, Items);
-                        return table.init().then(function() {
-//                            console.log('iElement: ' + iElement[0] );
-//                            console.log('template: ' + $templateCache.get('templates/mainTable.html') );
-//                            console.log('scope in directive/compile: ' + JSON.stringify($scope.data.results));
-                            iElement.append($compile($templateCache.get('templates/mainTable.html'))($scope));
-                            return null;
+                        // replace with RDTSettings
+                        var options = RDTSettings.query();
+                        var tableSettings;
+
+                        $scope.$watch('options', function(){
+                            tableSettings = angular.isDefined(options) ? options.settings : options;
+                            var table = new richDataTable($scope, tableSettings, $templateCache, $http, $q, Items);
+                            return table.init().then(function() {
+                                iElement.append($compile($templateCache.get('templates/mainTable.html'))($scope));
+
+                                return null;
+                            });
                         });
                     }
                 }

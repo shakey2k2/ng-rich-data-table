@@ -3,14 +3,13 @@
 /* Services */
 
 
-// Demonstrate how to register services
-// In this case it is a simple value service.
 angular.module('myApp.services', [])
  	.factory('Items', function () {
-      var items = {};
+      var items = {},
+          data = {};
       items.query = function () {
-        // data from server here
         return  {
+
             results: [
                 {name: "Moroni",  age: 50},
                 {name: "Tiancum", age: 43},
@@ -24,4 +23,38 @@ angular.module('myApp.services', [])
 		};
       };
       return items;
+    })
+    .factory('RDTSettings', function () {
+        var settings = {};
+
+        settings.query = function () {
+            return  {
+                "settings" : {
+                    "columnDefs" : [
+                        {
+                            "field": "name",
+                            "displayLabel":"Name",
+                            "class": "highVisGreen"
+                        },
+                        {
+                            "field": "age",
+                            "displayLabel":"Age",
+                            "class": ""
+                        }
+                    ],
+                    "useSearchInput": true,
+                    "filterOptions": [
+                        { "value": "name", "displayLabel":"Name" }
+                    ],
+                    "paginationOptions": {
+                        "pageSize": 8,
+                        "enablePagination": true
+                    },
+                    "hideHeader": false,
+                    "displayValue": undefined //function(a,b){return "return result here"}
+                }
+
+            };
+        };
+        return settings;
     });

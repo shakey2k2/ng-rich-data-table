@@ -20,19 +20,21 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q, Items)
             { "value": "name", "displayLabel":"Name" }
         ],
         "paginationOptions": {
-            "pageSize": 5,
-            "enablePagination": true
+            "pageSize": 999,
+            "enablePagination": false
         },
         "hideHeader": false,
+        "displayValue": undefined,
+
         // default templates
-        mainTable: "mainTable",
-        rdtBody: "rdtBody",
-        rdtFooter: "rdtFooter",
-        header: "header",
-        rdtTdContent: "rdtTdContent",
-        rdtPagination: "rdtPagination",
-        rdtToolbar: "rdtToolbar",
-        rdtIcons: "rdtIcons"
+        "mainTable": "mainTable",
+        "rdtBody": "rdtBody",
+        "rdtFooter": "rdtFooter",
+        "header": "header",
+        "rdtTdContent": "rdtTdContent",
+        "rdtPagination": "rdtPagination",
+        "rdtToolbar": "rdtToolbar",
+        "rdtIcons": "rdtIcons"
     },
     self = this;
 
@@ -56,7 +58,6 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q, Items)
 
     self.getTemplate = function (key) {
         var t = self.config[key];
-        console.log('self.config[key]: ' + self.config[key]);
         var tmplBaseDir = 'templates/';
         var uKey = tmplBaseDir + key + ".html";
         var p = $q.defer();
@@ -87,8 +88,8 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q, Items)
 
     self.init = function() {
         return self.initTemplates().then(function(){
-            defaults.data = Items.query();
-            $scope.data = defaults.data;
+            defaults = Items.query();
+            $scope.data = defaults;
         });
     };
 
@@ -125,6 +126,8 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q, Items)
         }
     };
 
+
+
     self.currentOrderByColumn = 0;
     self.hiddenColumns = [];
     self.reverseOrder = true;
@@ -132,10 +135,11 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q, Items)
     self.searchText = '';
     self.isSearchTextActive = false;
     self.isDropdownActive = false;
+    self.displayValue = angular.isDefined(defaults.displayValue) ? defaults.displayValue : undefined;
     self.getValue = function( data, columnDef ) {
-        // if displayValue exists overrides getValue
+        // if displayValue is a function overrides getValue
         if(angular.isFunction(self.displayValue)) {
-            return displayValue(data, columnDef);
+            return self.displayValue(data, columnDef);
         }else {
             return data[columnDef.field];
         }
