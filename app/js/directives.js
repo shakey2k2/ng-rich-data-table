@@ -7,7 +7,6 @@ angular.module('rdt.directives', [])
     .directive('rdtTable', ['$compile','$templateCache','$http', '$q','Items', 'RDTSettings', function($compile, $templateCache, $http, $q, Items, RDTSettings ) {
         return {
         	restrict:'A',
-            // TODO change to isolate scope
             scope: true,
             compile: function() {
                 return {
@@ -124,7 +123,6 @@ angular.module('rdt.directives', [])
 
         var linker = function(scope, element, attrs) {
             columnIndex = scope.$index;
-            // TODO: replace customTmpl
             columnTmplDefinition = scope.settings.columnDefs[columnIndex].customTmpl;
             var tmplBaseDir = 'templates/';
             // check column defs
