@@ -115,8 +115,7 @@ angular.module('rdt.directives', [])
             var contentTmpl = '';
 
             // check if there is a corresponding template in column definition
-           // TODO replace with angular functions
-            if (typeof columnTmplDefinition !== 'undefined') {
+            if (angular.isDefined(columnTmplDefinition)) {
                 contentTmpl = columnTmplDefinition;
             }else {
                 contentTmpl = simpleDataTmpl;

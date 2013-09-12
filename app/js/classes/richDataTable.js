@@ -182,22 +182,22 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q, Items)
     };
     $scope.$watch('searchText', function() {
         if ($scope.searchText === '') {
-            self.isSearchTextActive = false;
-            self.pagination.stopPagination = false;
+            $scope.isSearchTextActive = false;
+            $scope.pagination.stopPagination = false;
         } else {
-            self.isSearchTextActive = true;
-            self.pagination.stopPagination = true;
+            $scope.isSearchTextActive = true;
+            $scope.pagination.stopPagination = true;
         }
         // display all rows
         self.showAllRows();
     });
     self.showDropdownResults = function() {
-        if (self.searchDropdown === '') {
-            self.isDropdownActive = false;
-            self.pagination.stopPagination = false;
+        if ($scope.searchDropdown === '') {
+            $scope.isDropdownActive = false;
+            $scope.pagination.stopPagination = false;
         } else {
-            self.pagination.stopPagination = true;
-            self.isDropdownActive = true;
+            $scope.pagination.stopPagination = true;
+            $scope.isDropdownActive = true;
         }
     };
     self.getColumnOrder = function(){
@@ -231,8 +231,7 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q, Items)
     };
     self.getCustomColClass = function(columnIndex) {
         // get column class from config according to column index
-        // Todo: use angular functions
-        if (columnIndex !== undefined){
+        if ( angular.isDefined(columnIndex)){
             return self.settings.columnDefs[columnIndex].class;
         }
     };
@@ -254,6 +253,7 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q, Items)
     $scope.sorting = self.sorting;
     $scope.orderIsActive = self.orderIsActive;
     $scope.showRows = self.showRows;
+    $scope.shoAllRows = self.showAllRows;
     $scope.searchText = self.searchText;
     $scope.isSearchTextActive = self.isSearchTextActive;
     $scope.isDropdownActive = self.isDropdownActive;
@@ -261,4 +261,5 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q, Items)
     $scope.hideShowColumn = self.hideShowColumn;
     $scope.isHidden = self.isHidden;
     $scope.pagination = self.pagination;
+    $scope.showDropdownResults = self.showDropdownResults;
 };
