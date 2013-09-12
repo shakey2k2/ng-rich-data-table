@@ -13,7 +13,6 @@ angular.module('rdt.directives', [])
                 return {
                     pre: function($scope, iElement, iAttrs) {
                         var $element = $(iElement);
-                        // replace with RDTSettings
                         var options = RDTSettings.query();
                         var tableSettings;
 
@@ -129,10 +128,9 @@ angular.module('rdt.directives', [])
             columnTmplDefinition = scope.settings.columnDefs[columnIndex].customTmpl;
             var tmplBaseDir = 'templates/';
             // check column defs
-            // TODO replace with angular functions
-            if (typeof columnTmplDefinition !== 'undefined') {
+            if (angular.isDefined(columnTmplDefinition)) {
                 // needs a template according to column definition so checks if that template was set before in templateMap
-                if (typeof templateMap[columnTmplDefinition] !== "undefined") {
+                if (angular.isDefined( templateMap[columnTmplDefinition] )) {
                     // get template content from templateMap object if wasn't stored
                     element.html(getTemplate(templateMap[columnTmplDefinition])).show();
                     $compile(element.contents())(scope);
