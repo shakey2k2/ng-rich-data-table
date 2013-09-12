@@ -47,7 +47,7 @@ var richDataTable = function ($scope, options, $templateCache, $http, $q, Items)
 
     // get templates
     self.initTemplates = function() {
-        var templates = ['mainTable', 'rdtBody','rdtFooter','header','rdtTdContent','rdtPagination','rdtToolbar','rdtIcons'];
+        var templates = ['mainTable', 'rdtBody','rdtFooter','header','rdtPagination','rdtToolbar','rdtIcons'];
         var promises = [];
         angular.forEach(templates, function(template) {
             promises.push( self.getTemplate(template) );

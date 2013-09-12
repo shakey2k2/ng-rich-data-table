@@ -7,6 +7,7 @@ describe('directives', function() {
 
     beforeEach(module('rdt.directives'));
     beforeEach(module('myApp.filters'));
+    beforeEach(module('myApp.services'));
     beforeEach(module('templates/mainTable.html'));
     beforeEach(module('templates/header.html'));
     beforeEach(module('templates/rdtBody.html'));
@@ -20,28 +21,36 @@ describe('directives', function() {
         describe('table should get rendered', function() {
             var sampleData = {
                 data : [
-                        {name: "Moroni",  age: 50},
-                        {name: "Tiancum", age: 43},
-                        {name: "Jacob",   age: 27},
-                        {name: "Nephi",   age: 29},
-                        {name: "Enos",    age: 10}
-                        ,{"name":"Sheppard","age":68},{"name":"Rosella","age":13},{"name":"Tessa","age":87},{"name":"Emilia","age":25},{"name":"Vera","age":74},{"name":"Hallie","age":76},{"name":"Mullen","age":99},{"name":"Celeste","age":23},{"name":"Lorna","age":15},{"name":"Suzanne","age":75},{"name":"Lillie","age":34},{"name":"Crane","age":62},{"name":"Maryann","age":45},{"name":"Amalia","age":57},{"name":"Cooper","age":46},{"name":"Christine","age":70},{"name":"Ware","age":50},{"name":"Mary","age":87},{"name":"Dennis","age":31},{"name":"Kerri","age":81},{"name":"Ballard","age":27},{"name":"Bobbie","age":43},{"name":"Willis","age":73},{"name":"Larsen","age":69}
-                    ],
-                    settings: {
-                        columns : [
-                            { key: 'name', label: 'Name', columnClass:'highVisGreen' },
-                            { key: 'age',  label: 'Age', columnClass:'', customTmpl:'rdtActionButtons.html'  },
-                            { key: 'extracol',  label: 'ExtraColumn', columnClass:'', customTmpl:'rdtIcons.html'  }
-                        ],
-                        useSearchInput: true,  // display rdt toolbar
-                        filteringOptions: [
-                            {value: 'name', label: 'Name'}
-                        ],
-                        paginationOptions:{
-                            pageSize: 5,
-                            enablePagination: true
+                {name: "Moroni",  age: 50},
+                {name: "Tiancum", age: 43},
+                {name: "Jacob",   age: 27},
+                {name: "Nephi",   age: 29},
+                {name: "Enos",    age: 34}
+                ,{"name":"Sheppard","age":68},{"name":"Rosella","age":13},{"name":"Tessa","age":87},{"name":"Emilia","age":25},{"name":"Vera","age":74},{"name":"Hallie","age":76},{"name":"Mullen","age":99},{"name":"Celeste","age":23},{"name":"Lorna","age":15},{"name":"Suzanne","age":75},{"name":"Lillie","age":34},{"name":"Crane","age":62},{"name":"Maryann","age":45},{"name":"Amalia","age":57},{"name":"Cooper","age":46},{"name":"Christine","age":70},{"name":"Ware","age":50},{"name":"Mary","age":87},{"name":"Dennis","age":31},{"name":"Kerri","age":81},{"name":"Ballard","age":27},{"name":"Bobbie","age":43},{"name":"Willis","age":73},{"name":"Larsen","age":69}
+
+                ],
+                settings: {
+                    columns : [
+                        {
+                            "field": "name",
+                            "displayLabel":"Name",
+                            "class": "highVisGreen"
+                        },
+                        {
+                            "field": "age",
+                            "displayLabel":"Age",
+                            "class": ""
                         }
+                    ],
+                    useSearchInput: true,  // display rdt toolbar
+                    filteringOptions: [
+                        {value: 'name', label: 'Name'}
+                    ],
+                    paginationOptions:{
+                        pageSize: 5,
+                        enablePagination: true
                     }
+                }
                 };
 
             describe('table compiles', function() {
@@ -50,7 +59,6 @@ describe('directives', function() {
                 beforeEach(inject(function($rootScope, $compile) {
                     // Setup scope with data
                     $rootScope.config = sampleData;
-
                     // Create the actual table element and compile it
                     rdtTable = angular.element( '<table rdt-table config="config" cellpadding="0" cellspacing="0" border="1"></table>' );
                     $compile(rdtTable)($rootScope);
@@ -65,14 +73,13 @@ describe('directives', function() {
                         // Test number of column headers
                         var theadCols = rdtTable.find('thead tr th');
                         //console.log('theadCols is:'+ theadCols.length);
-                        expect(theadCols.length).toBe(3);
+                        expect(theadCols.length).toBe(sampleData.settings.columns.length);
                     });
 
                     it('header titles should be in the correct order', function() {
                         var theadCols = rdtTable.find('thead tr th' );
                         expect(angular.element(theadCols[0]).html()).toBe('Name');
                         expect(angular.element(theadCols[1]).html()).toBe('Age');
-                        expect(angular.element(theadCols[2]).html()).toBe('ExtraColumn');
                     })
                 });
 
@@ -83,27 +90,6 @@ describe('directives', function() {
                         // total rows should be sampleData.data + header + footer
                         expect(tRows.length).toBe(sampleData.data.length);
                     })
-                    /*
-                    it('should render the corresponding content in each column of main table body', function() {
-                        var tBodyRows = rdtTable.find('tbody tr' ),
-                        tBodyTd1, tBodyTd2,
-                        firstColumnArray = [],
-                        secondColumnArray = [];
-                        // create array for testing with the columns in sample data
-                        for (var i = 0; i <= sampleData.settings.paginationOptions.pageSize - 1; i++) {
-                            firstColumnArray.push(sampleData.data[i].name);
-                            secondColumnArray.push(sampleData.data[i].age);
-                        };
-                        // test if the array contains the corresponding td column data
-                        for (var i = 0; i <= tBodyRows.length - 1; i++) {
-                            tBodyTd1 = angular.element(tBodyRows[i]).find('td')[0];
-                            tBodyTd2 = angular.element(tBodyRows[i]).find('td')[1];
-                            expect(firstColumnArray).toContain( angular.element(tBodyTd1).html() );
-                            expect(secondColumnArray).toContain( parseInt( angular.element(tBodyTd2).html()) );
-                        };
-
-                    })
-                    */
 
                     it('should order the rows by age after clicking', function() {
                         var theadCols = rdtTable.find('thead tr th' ),
@@ -115,10 +101,9 @@ describe('directives', function() {
 
                         // lowest age should be in the first row
                         tBodyRows = rdtTable.find('tbody tr' );
-                        ageFirstRow = angular.element(tBodyRows[0]).find('td a img')[1];
-                        ageLastRow = angular.element(tBodyRows[0+1]).find('td a img')[1];
-                        // test first and second row after clicking
-                        expect( parseInt(ageFirstRow.getAttribute('alt')) ).toBeLessThan( parseInt(ageLastRow.getAttribute('alt')));
+                        ageFirstRow = angular.element(tBodyRows[0]).find('td')[1];
+                        ageLastRow = angular.element(tBodyRows[0+1]).find('td')[1];
+                        expect( parseInt(ageFirstRow.innerText) ).toBeLessThan( parseInt(ageLastRow.innerText));
 
                     })
 
@@ -133,10 +118,10 @@ describe('directives', function() {
 
                         // lowest age should be in the first row
                         tBodyRows = rdtTable.find('tbody tr' );
-                        ageFirstRow = angular.element(tBodyRows[0]).find('td a img')[1];
-                        ageLastRow = angular.element(tBodyRows[0+1]).find('td a img')[1];
+                        ageFirstRow = angular.element(tBodyRows[0]).find('td')[1];
+                        ageLastRow = angular.element(tBodyRows[0+1]).find('td')[1];
                         // test first and second row after clicking two times
-                        expect( parseInt(ageLastRow.getAttribute('alt')) ).toBeLessThan( parseInt(ageFirstRow.getAttribute('alt')));
+                        expect( parseInt(ageLastRow.innerText) ).toBeLessThan( parseInt(ageFirstRow.innerText));
 
                     })
 
@@ -203,7 +188,7 @@ describe('directives', function() {
                             }
                         }
                         // check if visible rows are the same as the page size
-                        expect( parseInt(totalVisibleRows) ).toBe(sampleData.settings.paginationOptions.pageSize);
+                        expect( parseInt(totalVisibleRows) ).toBe(8);
                     })
 
                     it('should display a different page after clicking in the next page number button', function() {
